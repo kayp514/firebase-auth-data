@@ -5,6 +5,23 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #1f2937;
+  --accent: #60a5fa;
+  --accent-foreground: #ffffff;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #60a5fa;
+  --primary-foreground: #ffffff;
+  --secondary: #374151;
+  --secondary-foreground: #f3f4f6;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
