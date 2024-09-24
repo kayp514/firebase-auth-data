@@ -212,11 +212,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Menu as="div" className="relative">
                   <MenuButton className="-m-1.5 flex items-center p-1.5">
                     <span className="sr-only">Open user menu</span>
-                    <img
-                      alt=""
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      className={`h-8 w-8 rounded-full ${theme === 'dark' ? 'bg-white' : 'bg-gray-50'}`}
-                    />
+                    <span className="inline-block h-8 w-8 overflow-hidden rounded-full bg-gray-100">
+        <svg fill="currentColor" viewBox="0 0 24 24" className="h-full w-full text-gray-300">
+          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </span>
                     <span className="hidden lg:flex lg:items-center">
                       <span aria-hidden="true" className={`ml-4 text-sm font-semibold leading-6 ${theme === 'dark' ? 'text-gray-50' : 'text-gray-900'}`}>
                         {userEmail || 'Loading...'}

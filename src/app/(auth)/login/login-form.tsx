@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '@/app/lib/firebase'
+import { signIn } from '@/app/lib/auth'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -13,11 +12,13 @@ export default function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
+
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      await signIn(email, password)
       router.push('/dashboard')
     } catch (error) {
-      setError('Failed to sign in. Please check your credentials.')
+      setError('Invalid email or password')
     }
   }
 

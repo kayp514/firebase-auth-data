@@ -7,7 +7,7 @@ import { auth } from './lib/firebase'
 import LoginForm from './(auth)/login/login-form'
 import Link from 'next/link'
 
-export default function Home() {
+export default function Page() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
