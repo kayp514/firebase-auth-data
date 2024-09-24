@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { auth } from '@/app/lib/firebase'
 import DashboardLayout from './ui/dashboard-layout'
-import DashboardContent from './dashboard-content'
+
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true)
@@ -32,7 +32,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-        <DashboardContent />
+      
     </DashboardLayout>
   )
 }

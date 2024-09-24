@@ -24,6 +24,7 @@ import {
 import { auth } from '@/app/lib/firebase'
 import Toggle from './toggle'
 import ListUsers from './list-users'
+import { useToast } from '@/hooks/use-toast'
 
 const navigation = [
   { name: 'Dashboard', icon: HomeIcon, current: true },
@@ -34,18 +35,28 @@ function classNames(...classes: (string | undefined)[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout() {
   const [currentView, setCurrentView] = useState('Users')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const { theme, setTheme } = useTheme()
   const router = useRouter()
+  const { toast } = useToast()
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        toast({
+          title: 'Success',
+          description: 'You are logged in',
+        })
         setUserEmail(user.email)
       } else {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to access this page',
+          variant: 'destructive'
+        })
         setUserEmail(null)
         router.push('/login')
       }
