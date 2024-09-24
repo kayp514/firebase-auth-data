@@ -2,11 +2,6 @@
 
 Welcome to **Firebase Auth Data**, an open-source project designed to provide a seamless user authentication and data management experience using Firebase. Built with Next.js, it offers a robust platform to manage user accounts and their associated data. This project is deployed on Vercel for easy access and demonstration.
 
-## Live Demo
-click on the following link and Create an Account.
-
-[Firebase Auth Data](https://firebase-auth-data-kayp514.vercel.app/)
-
 
 ## Features
 
