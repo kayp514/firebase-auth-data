@@ -4,37 +4,59 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from '@/app/lib/auth'
 import { useTheme } from 'next-themes'
-import { EnvelopeIcon } from '@heroicons/react/24/solid'
-import { UserIcon } from '@heroicons/react/24/solid'
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import SignupDialog from '../signup/signupDialog'
+import { useToast } from '@/hooks/use-toast'
+import { FirebaseError } from 'firebase/app'
+import { Toaster } from '@/components/ui/toaster'
+import { Icons } from '@/app/ui/icons'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { theme } = useTheme()
+  const { toast } = useToast()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-
+    setIsLoading(true)
     try {
       await signIn(email, password)
+      toast({
+        title: 'Success',
+        description: 'Connected.',
+      })
       router.push('/dashboard')
     } catch (error) {
-      setError('Invalid email or password')
+      console.error('Login error:', error)
+      if (error instanceof FirebaseError) {
+        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+          toast({
+            title: 'Error',
+            description: 'Invalid email or password',
+            variant: 'destructive'
+          })
+      } else {
+        toast({
+          title: 'Error',
+          description: `An error occurred: ${error.message}`,
+          variant: 'destructive'
+          })
+        }
+      } else {
+        toast({
+            title: 'Error',
+            description: 'An unexpected error occurred. Please try again later.',
+            variant: 'destructive'
+          })
+        }
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }
-
+  
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -50,7 +72,7 @@ export default function LoginForm() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="px-6 py-12 shadow sm:rounded-lg sm:px-12 ">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
               <div>
                 <label htmlFor="email" className={`block text-sm font-medium leading-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   Email address
@@ -110,64 +132,29 @@ export default function LoginForm() {
               <div>
                 <button
                   type="submit"
+                  disabled={isLoading}
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
+                  {isLoading && <Icons.spinner className="animate-spin" />}
                   Sign in
                 </button>
               </div>
             </form>
-
+           
             <div>
               <div className="relative mt-10">
                 <div aria-hidden="true" className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200" />
                 </div>
                 <div className="relative flex justify-center text-sm font-medium leading-6">
-                  <span className="bg-white px-6 text-gray-900">Or continue with</span>
+                  <span className="bg-white px-6 text-gray-900">Or Sign Up with</span>
                 </div>
               </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                <Dialog>
-                 <DialogTrigger
-                  className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
-                >
-                  <EnvelopeIcon className="h-5 w-5" />
-                  <span className="text-sm font-semibold leading-6">Email</span>
-                 </DialogTrigger>
-                 <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Sign in with Email</DialogTitle>
-                    <DialogDescription>
-                      Enter your email to sign in to your account
-                    </DialogDescription>
-                  </DialogHeader>
-                 </DialogContent>
-                </Dialog>
-
-                <Dialog>
-                  <DialogTrigger>
-                <button
-                  
-                  className="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent"
-                >
-                  <UserIcon className="h-5 w-5" />
-                  <span className="text-sm font-semibold leading-6">Anonymously</span>
-                </button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Sign in Anonymously</DialogTitle>
-                    <DialogDescription>
-                      Sign in to your account anonymously
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-                </Dialog>
-              </div>
+              <SignupDialog />
             </div>
           </div>
         </div>
+        <Toaster />
       </div>
   )
 }
