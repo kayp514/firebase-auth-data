@@ -21,10 +21,10 @@ Welcome to **Firebase Auth Data**, an open-source project designed to provide a 
 
 ## Technologies Used
 
+- **Google Cloud Function**: We created a function using JavaScript and deployed it on Cloud Run. This function lists all users, which is displayed on the Users page of the system, ensuring efficient and secure data retrieval. The code for the Cloud Function is not included in this repository. If you would like to take a look at it, please reach out to me, and I will be happy to assist.
 - **Next.js**: A React framework for building server-side rendered (SSR) applications.
 - **Firebase**: Utilizes Firebase Authentication for secure user authentication and Firebase Realtime Database for real-time data storage.
 - **Tailwind CSS**: A utility-first CSS framework for styling the application.
-- **Google Cloud Function**: We created a function using JavaScript and deployed it on Cloud Run. This function lists all users, which is displayed on the Users page of the system, ensuring efficient and secure data retrieval. The code for the Cloud Function is not included in this repository. If you would like to take a look at it, please reach out to me, and I will be happy to assist.
 
 ## Getting Started
 
