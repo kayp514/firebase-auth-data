@@ -29,31 +29,44 @@ Welcome to **Firebase Auth Data**, an open-source project designed to provide a 
 ## Getting Started
 
 To get started with Firebase Auth Data, follow these steps:
-1. Clone the repository:
-Bash
-```bash
-git clone https://github.com/kayp514//firebase-auth-data.git
-cd firebase-auth-data
-```
 
-2. Install dependencies:
+1. **Clone the repository**:
+Bash
+   ```bash
+   git clone https://github.com/kayp514//firebase-auth-data.git
+   cd firebase-auth-data
+   ```
+
+2. **Install dependencies**:
 Bash
 ```bash
 npm install
 ```
 
-3. Set up Firebase:
+4. **Set up Firebase**:
 - Create a Firebase project in the Firebase Console.
 - Enable Firebase Authentication and Firebase Realtime Database.
-- Add your Firebase configuration to the `.env.local` file.
 
-4. Start the development server:
+5. **Create a `.env.local` file** in the root directory of your project with the following content:
+
+   ```
+   FIREBASE_API_KEY=your_api_key
+   FIREBASE_AUTH_DOMAIN=your_auth_domain
+   FIREBASE_PROJECT_ID=your_project_id
+   FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   FIREBASE_APP_ID=your_app_id
+   ```
+
+   You can find this information in the Firebase Console after creating your project. Log into the Firebase Console, click the settings gear beside "Project Overview" to open "Project Settings," and under the "General" tab, you will find the configuration details.
+
+6. **Start the development server**:
 Bash
 ```bash
 npm run dev
 ```
 
-5. Access the application at `http://localhost:3000`.
+7. **Access the application** at `http://localhost:3000`.
 
 ## Contributing
 
