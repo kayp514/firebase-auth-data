@@ -31,7 +31,7 @@ export default function SignupDialog(){
   <DialogHeader>
     <DialogTitle>Create Account</DialogTitle>
     <DialogDescription>
-      Enter your email and password to create account 
+      Enter your email and password to create account. No email verification required at this time. but coming soon
       <div><SignupForm onSuccess={handleSignUpSuccess} /></div>
     </DialogDescription>
   </DialogHeader>
