@@ -244,8 +244,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           </div>
 
-          <main className="py-10">
-            <div className={`px-4 sm:px-6 lg:px-8 ${theme === 'dark' ? 'bg-gray-900 ' : 'bg-white'}`}>
+          <main className={`py-10 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
+            <div className="px-4 sm:px-6 lg:px-8">
                 
             {currentView === 'Users' && <ListUsers />}
             </div>

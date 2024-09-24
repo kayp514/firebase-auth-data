@@ -56,8 +56,8 @@ export default function ListUsers() {
         <div className="mt-8 flow-root">
           <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-              <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-300">
+              <div className={`overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg ${theme === 'dark' ? 'ring-white/5' : 'ring-black'}`}>
+                <table className={`min-w-full divide-y ${theme === 'dark' ? 'divide-white/5' : 'divide-gray-300'}`}>
                   <thead>
                     <tr>  
                       <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold  sm:pl-6">
@@ -80,7 +80,7 @@ export default function ListUsers() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y">
+                  <tbody className={`divide-y ${theme === 'dark' ? 'divide-white/5' : 'divide-gray-200'}`}>
                     {users && users.map((person) => (
                       <tr key={person.email}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6">{person.email}</td>
