@@ -43,11 +43,11 @@ Bash
 npm install
 ```
 
-4. **Set up Firebase**:
+3. **Set up Firebase**:
 - Create a Firebase project in the Firebase Console.
 - Enable Firebase Authentication and Firebase Realtime Database.
 
-5. **Create a `.env.local` file** in the root directory of your project with the following content:
+4. **Create a `.env.local` file** in the root directory of your project with the following content:
 
    ```
    FIREBASE_API_KEY=your_api_key
@@ -60,13 +60,13 @@ npm install
 
    You can find this information in the Firebase Console after creating your project. Log into the Firebase Console, click the settings gear beside "Project Overview" to open "Project Settings," and under the "General" tab, you will find the configuration details.
 
-6. **Start the development server**:
+5. **Start the development server**:
 Bash
 ```bash
 npm run dev
 ```
 
-7. **Access the application** at `http://localhost:3000`.
+6. **Access the application** at `http://localhost:3000`.
 
 ## Contributing
 
