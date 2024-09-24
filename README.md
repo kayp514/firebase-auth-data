@@ -5,13 +5,14 @@ Welcome to **Firebase Auth Data**, an open-source project designed to provide a 
 ## Live Demo
 
 [Firebase Auth Data](https://firebase-auth-data-kayp514.vercel.app/)
-Username: user@lifesprintcare.ca
-Password: User2309
+
+-Username: user@lifesprintcare.ca
+-Password: User2309
 
 or 
 
-Username: test2309@coffeetechlab.org
-Password: Testtest2309
+- Username: test2309@coffeetechlab.org
+-Password: Testtest2309
 
 ## Features
 
