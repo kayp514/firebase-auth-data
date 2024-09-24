@@ -1,6 +1,6 @@
 # Firebase Auth Data: Open Source User Management System
 
-Welcome to **Firebase Auth Data**, an open-source project designed to provide a seamless user authentication and data management experience using Firebase. Built with Next.js, it offers a robust platform to manage user accounts and their associated data
+Welcome to **Firebase Auth Data**, an open-source project designed to provide a seamless user authentication and data management experience using Firebase. Built with Next.js, it offers a robust platform to manage user accounts and their associated data. This project is deployed on Vercel for easy access and demonstration.
 
 ## Features
 
