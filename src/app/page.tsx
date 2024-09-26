@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { User } from 'firebase/auth'
-import { auth } from './lib/firebase'
+import { clientAuth } from './lib/firebaseClient'
 import LoginPage from './(auth)/login/page'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
@@ -14,7 +14,7 @@ export default function Home() {
   const router = useRouter()
   const { theme, setTheme } = useTheme()
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = clientAuth.onAuthStateChanged((user) => {
       setUser(user)
       setLoading(false)
       if (user) {

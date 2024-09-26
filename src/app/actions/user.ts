@@ -1,11 +1,11 @@
 'use server'
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { clientAuth } from "@/app/lib/firebaseClient";
 
 export async function signUpUser(email: string, password: string) {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
     const user = userCredential.user;
     
     return { success: true, uid: user.uid };

@@ -21,7 +21,7 @@ import {
   ChevronDownIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { auth } from '@/app/lib/firebase'
+import { clientAuth } from '@/app/lib/firebaseClient'
 import Toggle from './toggle'
 import ListUsers from './list-users'
 import { useToast } from '@/hooks/use-toast'
@@ -44,7 +44,7 @@ export default function DashboardLayout() {
   const { toast } = useToast()
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = clientAuth.onAuthStateChanged((user) => {
       if (user) {
         toast({
           title: 'Success',
@@ -67,7 +67,7 @@ export default function DashboardLayout() {
 
   const handleSignOut = async () => {
     try {
-      await auth.signOut()
+      await clientAuth.signOut()
       router.push('/login')
     } catch (error) {
       console.error('Error signing out:', error)

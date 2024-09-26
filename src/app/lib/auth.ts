@@ -1,9 +1,9 @@
-import { auth } from './firebase';
+import { clientAuth } from './firebaseClient';
 import { signInWithEmailAndPassword, signOut as firebaseSignOut, User } from 'firebase/auth';
 
 export async function signIn(email: string, password: string): Promise<User> {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(clientAuth, email, password);
     return userCredential.user;
   } catch (error) {
     console.error('Error signing in:', error);
@@ -13,7 +13,7 @@ export async function signIn(email: string, password: string): Promise<User> {
 
 export async function signOut(): Promise<void> {
   try {
-    await firebaseSignOut(auth);
+    await firebaseSignOut(clientAuth);
   } catch (error) {
     console.error('Error signing out:', error);
     throw error;

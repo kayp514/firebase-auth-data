@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { auth } from '@/app/lib/firebase'
+import { clientAuth } from '@/app/lib/firebaseClient'
 import DashboardLayout from './ui/dashboard-layout'
 
 
@@ -11,7 +11,7 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = clientAuth.onAuthStateChanged((user) => {
       if (user) {
         setLoading(false)
       } else {
