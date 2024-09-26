@@ -2,6 +2,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/app/lib/firebaseAdmin';
+import { FirebaseError } from 'firebase/app';
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('Authorization');
@@ -16,28 +17,46 @@ export async function GET(request: NextRequest) {
     const decodedToken = await adminAuth.verifyIdToken(token);
     const uid = decodedToken.uid;
 
-    // Fetch user data from your database or Firebase
-    // For this example, we'll just return the email from the token
+    // Fetch user data from Firebase Authentication
+    const userRecord = await adminAuth.getUser(uid);
+
     const userData = {
-      uid: uid,
-      email: decodedToken.email,
-      // Add any other user data you want to include
+      uid: userRecord.uid,
+      email: userRecord.email,
+      displayName: userRecord.displayName,
+      photoURL: userRecord.photoURL,
+      emailVerified: userRecord.emailVerified,
+      phoneNumber: userRecord.phoneNumber,
+      creationTime: userRecord.metadata.creationTime,
+      lastSignInTime: userRecord.metadata.lastSignInTime,
     };
 
     return NextResponse.json(userData);
   } catch (error) {
-    console.error('Error verifying token:', error);
-    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+    console.error('Error fetching user data:', error);
+    
+    if (error instanceof FirebaseError) {
+      switch (error.code) {
+        case 'auth/id-token-expired':
+          return NextResponse.json({ error: 'Token expired' }, { status: 401 });
+        case 'auth/user-not-found':
+          return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        case 'auth/argument-error':
+          return NextResponse.json({ error: 'Invalid token format' }, { status: 400 });
+        default:
+          return NextResponse.json({ error: 'Authentication error' }, { status: 401 });
+      }
+    } else {
+      return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
   }
 }
 
 export async function HEAD(request: NextRequest) {
-  // Implement HEAD request if needed
   return new NextResponse(null, { status: 200 });
 }
 
 export async function OPTIONS(request: NextRequest) {
-  // Handle CORS preflight request
   return new NextResponse(null, {
     status: 204,
     headers: {
