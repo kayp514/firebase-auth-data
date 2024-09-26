@@ -1,29 +1,37 @@
 // src/auth/tokenService.ts
 
 import { adminAuth } from '@/app/lib/firebaseAdmin';
+import { FirebaseError } from 'firebase/app';
 
 export async function generateToken(uid: string): Promise<string> {
-  if (typeof window !== 'undefined') {
-    throw new Error('Token generation is not available on the client side');
-  }
   if (!adminAuth) {
     throw new Error('Admin Auth is not initialized');
   }
-  return await adminAuth.createCustomToken(uid);
+  try {
+    return await adminAuth.createCustomToken(uid);
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      console.error(`Firebase error generating token: ${error.code} - ${error.message}`);
+    } else {
+      console.error('Unexpected error generating token:', error);
+    }
+    throw error;
+  }
 }
 
 export async function verifyToken(token: string): Promise<{ uid: string } | null> {
+  if (!adminAuth) {
+    throw new Error('Admin Auth is not initialized');
+  }
   try {
-    if (typeof window !== 'undefined') {
-      throw new Error('Token verification is not available on the client side');
-    }
-    if (!adminAuth) {
-      throw new Error('Admin Auth is not initialized');
-    }
     const decodedToken = await adminAuth.verifyIdToken(token);
     return { uid: decodedToken.uid };
   } catch (error) {
-    console.error('Token verification failed:', error);
+    if (error instanceof FirebaseError) {
+      console.error(`Firebase error verifying token: ${error.code} - ${error.message}`);
+    } else {
+      console.error('Unexpected error verifying token:', error);
+    }
     return null;
   }
 }
