@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ redirectUrl: finalRedirectUrl });
   } catch (error) {
     console.error('Login error:', error);
+    alert('Login failed. Please try again.');
     return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
   }
 }
