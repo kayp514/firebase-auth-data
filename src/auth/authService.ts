@@ -7,7 +7,7 @@ import {
   User
 } from 'firebase/auth';
 import { clientAuth } from '../app/lib/firebaseClient';
-import { adminAuth } from '../app/lib/firebaseAdmin';
+import { adminAuth, adminDb } from '../app/lib/firebaseAdmin';
 import { logAuthError } from './errorHandling';
 
 export async function signUp(email: string, password: string): Promise<User> {
@@ -17,6 +17,24 @@ export async function signUp(email: string, password: string): Promise<User> {
   } catch (error) {
     logAuthError(error);
     throw error;
+  }
+}
+
+export async function signUpUser(email: string, password: string, appId?: string): Promise<{ success: boolean; user?: User; error?: string }> {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
+    const user = userCredential.user;
+
+    await adminDb.collection('users').doc(user.uid).set({
+      email: user.email,
+      appId: appId || 'internal',
+      createdAt: new Date().toISOString(),
+    });
+
+    return { success: true, user };
+  } catch (error) {
+    console.error('Error signing up user:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to create account' };
   }
 }
 

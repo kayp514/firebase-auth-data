@@ -1,58 +1,49 @@
+// app/api/external/signup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { clientAuth } from "@/app/lib/firebaseClient";
-import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
+import { adminDb, adminAuth } from '@/app/lib/firebaseAdmin';
+import { signUpExternalUser } from '@/app/actions/user';
 
 export async function POST(request: NextRequest) {
-  const response = NextResponse.next();
-  setCorsHeaders(response);
-
-  if (!rateLimit(request, 5, 60000)) { // 5 requests per minute
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-  }
-
   try {
-    const { email, password } = await request.json();
-
-    // Validate required fields
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
+    const { email, password, appId, redirectUrl } = await request.json();
+    
+    if (!appId || !redirectUrl) {
+      return NextResponse.json({ error: 'Missing appId or redirectUrl' }, { status: 400 });
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+    // Verify the appId
+    const appSnapshot = await adminDb.collection('registeredApps').where('appId', '==', appId).get();
+
+    if (appSnapshot.empty) {
+      return NextResponse.json({ error: 'Invalid appId' }, { status: 400 });
     }
 
-    // Validate password length
-    if (password.length < 6) {
-      return NextResponse.json({ error: "Password must be at least 6 characters long" }, { status: 400 });
+    // Verify the redirectUrl using Google Cloud Identity Platform
+    try {
+      await adminAuth.generateSignInWithEmailLink(email, {
+        url: redirectUrl,
+        handleCodeInApp: true,
+      });
+    } catch (error) {
+      console.error('Error verifying redirect URL:', error);
+      return NextResponse.json({ error: 'Invalid redirectUrl' }, { status: 400 });
     }
 
-    // Create user with Firebase
-    const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
-    const user = userCredential.user;
+    const result = await signUpExternalUser(email, password, appId);
 
-    return NextResponse.json({
-      success: true,
-      uid: user.uid,
-      message: "User created successfully"
-    });
-
-  } catch (error: any) {
-    console.error("Signup error:", error);
-
-    if (error?.code === 'auth/email-already-in-use') {
-      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+    if (result.success) {
+      const successUrl = new URL(redirectUrl);
+      successUrl.searchParams.append('status', 'success');
+      successUrl.searchParams.append('email', email);
+      return NextResponse.json({ 
+        message: 'User registered successfully',
+        redirectUrl: successUrl.toString()
+      }, { status: 201 });
+    } else {
+      return NextResponse.json({ error: result.error }, { status: 400 });
     }
-
-    return NextResponse.json({ error: "Failed to create account" }, { status: 500 });
+  } catch (error) {
+    console.error('Error in external signup route:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-}
-
-export async function OPTIONS(request: NextRequest) {
-  const response = new NextResponse(null, { status: 200 });
-  setCorsHeaders(response);
-  return response;
 }

@@ -24,11 +24,13 @@ import {
 import { clientAuth } from '@/app/lib/firebaseClient'
 import Toggle from './toggle'
 import ListUsers from './list-users'
+import RegisterAppPage from './registerApp'
 import { useToast } from '@/hooks/use-toast'
 
 const navigation = [
   { name: 'Dashboard', icon: HomeIcon, current: true },
   { name: 'Users', icon: UsersIcon, current: false },
+  { name: 'Apps', icon: UsersIcon, current: false },
 ]
 
 function classNames(...classes: (string | undefined)[]) {
@@ -45,6 +47,7 @@ export default function DashboardLayout() {
 
   useEffect(() => {
     const unsubscribe = clientAuth.onAuthStateChanged((user) => {
+      console.log("Dashboard - User:", user); 
       if (user) {
         toast({
           title: 'Success',
@@ -257,8 +260,10 @@ export default function DashboardLayout() {
 
           <main className={`py-10 ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'}`}>
             <div className="px-4 sm:px-6 lg:px-8">
-                
+             
             {currentView === 'Users' && <ListUsers />}
+            {currentView === 'Apps' && <RegisterAppPage />}
+            
             </div>
           </main>
         </div>
