@@ -1,156 +1,97 @@
 'use client'
 
-import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Loader2, AlertCircle } from "lucide-react"
+import { useState } from 'react'
+import { signUpUser } from '@/app/actions/user'
+import { useToast } from '@/hooks/use-toast'
+import { Icons } from '@/app/ui/icons'
 
-// Separate component for the form content
-function SignupForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
+export default function SignupForm() {
+    const [error, setError] = useState<string | null>(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const { toast } = useToast()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        setIsLoading(true)
+        const formData = new FormData(event.currentTarget)
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match")
-      setIsLoading(false)
-      return
-    }
+        try {
+            const result = await signUpUser(email, password)
+            if (result.success) {
+              toast({
+                title: 'Account created',
+                description: "We've created your account for you.",
+              })
+            } else {
+              throw new Error(result.error || 'Failed to create account')
+            }
+        } catch (error) {
+            toast({
+                title: 'Error',
+                description: error instanceof Error ? error.message : 'Failed to create account',
+                variant: 'destructive'
+              })
+            } finally {
+              setIsLoading(false)
+            }
+        }
 
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
+    return (
 
-      const data = await response.json()
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create account')
-      }
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                Email address
+              </label>
+              <div className="mt-2">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
 
-      // Get the callback and redirect URLs from the search params
-      const callbackUrl = searchParams.get('callback') || '/auth/callback'
-      const redirectUrl = searchParams.get('redirect') || '/dashboard'
+            <div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                  Password
+                </label>
+              </div>
+              <div className="mt-2">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
 
-      // Generate a token (this should be done securely on the server)
-      const token = data.uid // Using the UID as a simple token for demonstration
+            <div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                {isLoading && <Icons.spinner className="animate-spin" />}
+                Sign Up
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-      // Redirect back to VogatPBX with the token
-      const redirectWithToken = `${callbackUrl}?token=${token}&redirect=${encodeURIComponent(redirectUrl)}`
-      router.push(redirectWithToken)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during signup')
-    } finally {
-      setIsLoading(false)
-    }
+    )
   }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="you@example.com"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirm Password</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          required
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-      </div>
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating Account...
-          </>
-        ) : (
-          'Sign Up'
-        )}
-      </Button>
-    </form>
-  )
-}
-
-export default function SignupFormAPI() {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Image
-              src="/logoPBX.png?height=64&width=64"
-              alt="VogatPBX Logo"
-              width={64}
-              height={64}
-              className="rounded-lg"
-            />
-          </div>
-          <CardTitle className="text-2xl font-bold">Create Your Account</CardTitle>
-          <CardDescription>
-            Sign up to access your VogatPBX dashboard
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SignupForm />
-          </Suspense>
-        </CardContent>
-        <CardFooter>
-          <p className="text-center text-sm text-muted-foreground w-full">
-            Already have an account?{' '}
-            <a href="/login" className="font-medium text-primary hover:underline">
-              Sign in
-            </a>
-          </p>
-        </CardFooter>
-      </Card>
-      
-      <footer className="mt-8 text-center text-sm text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} VogatPBX. All rights reserved.</p>
-      </footer>
-    </div>
-  )
-}
+  
