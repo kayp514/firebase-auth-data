@@ -1,14 +1,17 @@
 'use client'
 
 import { useState } from 'react'
-import { toast } from '@/hooks/use-toast'
+import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { clientAuth } from '@/app/lib/firebaseClient'
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
 
 
 export default function RegisterAppPage() {
   const [appName, setAppName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
   
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,11 +45,13 @@ export default function RegisterAppPage() {
       const data = await response.json()
 
       if (data.appId) {
-        toast({
-          title: 'App Registered',
-          description: `App ID: ${data.appId}`,
-          variant: 'default',
-        })
+        <Alert>
+        
+        <AlertTitle>App Registered!</AlertTitle>
+        <AlertDescription>
+          `App ID: ${data.appId}`
+        </AlertDescription>
+      </Alert>
         setAppName('')
       } else {
         throw new Error('Failed to register app: No appId returned')
