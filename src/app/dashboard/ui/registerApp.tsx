@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
+import { Toaster } from "@/components/ui/toaster"
 import { clientAuth } from '@/app/lib/firebaseClient'
+
 
 export default function RegisterAppPage() {
   const [appName, setAppName] = useState('')
@@ -85,6 +87,7 @@ export default function RegisterAppPage() {
           {isLoading ? 'Registering...' : 'Register App'}
         </button>
       </form>
+      <Toaster />
     </div>
   )
 }
