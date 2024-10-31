@@ -49,7 +49,7 @@ export default function RegisterAppPage() {
         
         <AlertTitle>App Registered!</AlertTitle>
         <AlertDescription>
-          `App ID: ${data.appId}`
+          You can add components to your app using the cli.
         </AlertDescription>
       </Alert>
         setAppName('')
