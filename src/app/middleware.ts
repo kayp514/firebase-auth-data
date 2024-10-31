@@ -8,9 +8,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    return NextResponse.next()
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: '/dashboard/:path*',
+  matcher: ['/dashboard/:path*', '/api/:path*'],
 }

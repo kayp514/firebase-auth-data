@@ -2,8 +2,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/app/lib/firebaseAdmin';
 import { nanoid } from 'nanoid';
+import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
 
 export async function POST(request: NextRequest) {
+  const response = NextResponse.next();
+  setCorsHeaders(response);
+
+  if (!rateLimit(request, 5, 60000)) { // 5 requests per minute
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
+
   try {
     // Verify authentication
     console.log("Request Headers:", request.headers);
@@ -30,7 +38,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or missing appName' }, { status: 400 });
     }
 
-    const appId = nanoid(16); // Generate a unique appId
+    const appId = nanoid(16);
 
     const appData = {
       appId,
@@ -57,4 +65,11 @@ export async function POST(request: NextRequest) {
     const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
+}
+
+
+export async function OPTIONS(request: NextRequest) {
+  const response = new NextResponse(null, { status: 200 });
+  setCorsHeaders(response);
+  return response;
 }

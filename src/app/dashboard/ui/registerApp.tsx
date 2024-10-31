@@ -45,13 +45,10 @@ export default function RegisterAppPage() {
       const data = await response.json()
 
       if (data.appId) {
-        <Alert>
-        
-        <AlertTitle>App Registered!</AlertTitle>
-        <AlertDescription>
-          You can add components to your app using the cli.
-        </AlertDescription>
-      </Alert>
+        toast({
+          title: "App Registered!",
+          description: "You can add components to your app using the cli.",
+        })
         setAppName('')
       } else {
         throw new Error('Failed to register app: No appId returned')
