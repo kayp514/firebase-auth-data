@@ -45,6 +45,7 @@ export default function RegisterAppPage() {
         toast({
           title: 'App Registered',
           description: `App ID: ${data.appId}`,
+          variant: 'default',
         })
         setAppName('')
       } else {
