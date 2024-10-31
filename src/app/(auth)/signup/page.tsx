@@ -5,7 +5,7 @@ import { signUpUser } from '@/app/actions/user'
 import { useToast } from '@/hooks/use-toast'
 import { Icons } from '@/app/ui/icons'
 
-export default function SignupFormAPI({onSuccess}: {onSuccess: () => void }) {
+export default function SignupForm({onSuccess}: {onSuccess: () => void }) {
     const [error, setError] = useState<string | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const { toast } = useToast()
