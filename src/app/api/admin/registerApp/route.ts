@@ -1,9 +1,9 @@
 // app/api/admin/registerApp/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/app/lib/firebaseAdmin';
-import { nanoid } from 'nanoid';
+import { randomBytes } from 'crypto';
+import { sanitize } from 'isomorphic-dompurify';
 import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
-import { FirebaseError } from 'firebase-admin/app';
 
 export async function POST(request: NextRequest) {
   const response = NextResponse.next();
@@ -44,11 +44,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or missing appName' }, { status: 400 });
     }
 
-    const appId = nanoid(16);
+    const sanitizedAppName = sanitize(body.appName);
+    const appId = randomBytes(16).toString('hex');
 
     const appData = {
       appId,
-      appName,
+      appName: sanitizedAppName,
       createdAt: new Date().toISOString(),
     };
 
