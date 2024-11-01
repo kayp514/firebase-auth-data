@@ -35,7 +35,7 @@ export async function signUpExternalUser(email: string, password: string, appId:
       }
     }, { merge: true });
 
-    return { success: true, uid: userRecord.uid };
+    return { success: true, uid: userRecord.uid, role: 'admin' };
   } catch (error) {
     console.error("Error signing up external user:", error);
     return { success: false, error: "Failed to create account" };

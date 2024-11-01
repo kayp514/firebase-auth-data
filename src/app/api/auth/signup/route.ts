@@ -1,4 +1,4 @@
-// app/api/external/signup/route.ts
+// app/api/auth/signup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/app/lib/firebaseAdmin';
 import { signUpExternalUser } from '@/app/actions/user';
@@ -48,9 +48,13 @@ export async function POST(request: NextRequest) {
       const successUrl = new URL(redirectUrl);
       successUrl.searchParams.append('status', 'success');
       successUrl.searchParams.append('email', email);
+      successUrl.searchParams.append('userUuid', result.uid ?? '');
+      successUrl.searchParams.append('role', result.role ?? '');
       return NextResponse.json({ 
         message: 'User registered successfully',
-        redirectUrl: successUrl.toString()
+        redirectUrl: successUrl.toString(),
+        userUuid: result.uid,
+        role: result.role
       }, { status: 201 });
     } else {
       return NextResponse.json({ error: result.error }, { status: 400 });
