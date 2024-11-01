@@ -1,18 +1,60 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useToast } from "@/hooks/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { clientAuth } from '@/app/lib/firebaseClient'
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
+const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'http://localhost:3000';
 
+interface RegisteredApp {
+  id: string;
+  appId: string;
+  appName: string;
+  createdAt: string;
+}
 
 export default function RegisterAppPage() {
   const [appName, setAppName] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [registeredApps, setRegisteredApps] = useState<RegisteredApp[]>([])
   const { toast } = useToast()
-  
+
+  const fetchRegisteredApps = async () => {
+    try {
+      const user = clientAuth.currentUser;
+      const token = await user?.getIdToken();
+      if (!token) {
+        throw new Error('Not authenticated');
+      }
+
+      const response = await fetch('/api/admin/getRegisteredApps', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setRegisteredApps(data.apps);
+    } catch (error) {
+      console.error('Error fetching registered apps:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch registered apps',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchRegisteredApps();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -27,7 +69,9 @@ export default function RegisterAppPage() {
         throw new Error('Not authenticated')
       }
 
-      const response = await fetch('/api/admin/registerApp', {
+      console.log("registerApp - appName:", appName);
+
+      const response = await fetch(`${AUTH_APP_URL}/api/admin/registerApp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,6 +94,7 @@ export default function RegisterAppPage() {
           description: "You can add components to your app using the cli.",
         })
         setAppName('')
+        fetchRegisteredApps(); // Refresh the list of registered apps
       } else {
         throw new Error('Failed to register app: No appId returned')
       }
@@ -66,30 +111,64 @@ export default function RegisterAppPage() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-5">Register External App</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="appName" className="block text-sm font-medium text-gray-700">
-            App Name
-          </label>
-          <input
-            type="text"
-            id="appName"
-            value={appName}
-            onChange={(e) => setAppName(e.target.value)}
-            required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        >
-          {isLoading ? 'Registering...' : 'Register App'}
-        </button>
-      </form>
+    <div className="flex flex-col md:flex-row gap-8 p-8 h-screen">
+      <div className="w-full md:w-1/2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Register External App</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="appName" className="block text-sm font-medium text-gray-700">
+                  App Name
+                </label>
+                <input
+                  type="text"
+                  id="appName"
+                  value={appName}
+                  onChange={(e) => setAppName(e.target.value)}
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                {isLoading ? 'Registering...' : 'Register App'}
+              </button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="w-full md:w-1/2">
+      <Card className="h-full flex flex-col">
+          <CardHeader>
+            <CardTitle>Registered Apps</CardTitle>
+          </CardHeader>
+          <ScrollArea className="flex-grow">
+          <CardContent>
+            {registeredApps.length === 0 ? (
+              <p className="text-gray-500">No apps registered yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {registeredApps.map((app, index) => (
+                  <li key={index} className="border-b border-gray-200 pb-2">
+                    <strong className="text-indigo-600">{app.appName}</strong>
+                    <br />
+                    <span className="text-sm text-gray-500">ID: {app.appId}</span>
+                    <br />
+                    <span className="text-sm text-muted-foreground">Created: {new Date(app.createdAt).toLocaleString()}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+          </ScrollArea>
+        </Card>
+      </div>
       <Toaster />
     </div>
   )

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/app/lib/firebaseAdmin';
 import { nanoid } from 'nanoid';
 import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
+import { FirebaseError } from 'firebase-admin/app';
 
 export async function POST(request: NextRequest) {
   const response = NextResponse.next();
@@ -31,6 +32,11 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log("Request body:", body);
+
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
 
     const appName = body.appName;
 
@@ -55,9 +61,14 @@ export async function POST(request: NextRequest) {
         appId,
         appDocId: appDocRef.id
       }, { status: 201 });
-    } catch (firebaseError) {
-      console.error('Firebase error:', firebaseError);
-      return NextResponse.json({ error: 'Database operation failed' }, { status: 500 });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Firebase error:', error.message);
+        return NextResponse.json({ error: `Firebase operation failed: ${error.message}` }, { status: 500 });
+      } else {
+        console.error('Unknown error:', error);
+        return NextResponse.json({ error: 'An unexpected error occurred during database operation' }, { status: 500 });
+      }
     }
   } catch (error) {
     console.error('Error registering app:', error);

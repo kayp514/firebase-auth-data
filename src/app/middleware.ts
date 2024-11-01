@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const session = request.cookies.get('session')
+  const token = request.cookies.get('auth_token')?.value;
 
-  if (!session && request.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (!token) {
+    console.log('No token found in middleware, redirecting to login');
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   if (request.nextUrl.pathname.startsWith('/api/')) {
