@@ -7,8 +7,6 @@ import { clientAuth } from '@/app/lib/firebaseClient'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
-const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'http://localhost:3000';
-
 interface RegisteredApp {
   id: string;
   appId: string;
@@ -71,7 +69,7 @@ export default function RegisterAppPage() {
 
       console.log("registerApp - appName:", appName);
 
-      const response = await fetch(`${AUTH_APP_URL}/api/admin/registerApp`, {
+      const response = await fetch('/api/admin/registerApp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
