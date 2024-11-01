@@ -70,9 +70,9 @@ export default function ExternalSignupForm() {
           }, '*') // Replace '*' with the external app's origin for added security
         }
         // Delay redirect to show success message
-        setTimeout(() => {
-          window.close()
-        }, 3000)
+        //setTimeout(() => {
+          //window.close()
+        //}, 3000)
       } else {
         throw new Error(data.error || 'Failed to sign up')
       }
