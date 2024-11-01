@@ -56,12 +56,22 @@ export default function ExternalSignupForm() {
           description: 'Signup successful. Redirecting...',
           variant: 'default',
         })
+
+        // Send message to opener window
+        if (window.opener) {
+          window.opener.postMessage({
+            type: 'SIGNUP_SUCCESS',
+            data: {
+              status: 'success',
+              email: email,
+              userUuid: data.userUuid,
+              role: data.role
+            }
+          }, '*') // Replace '*' with the external app's origin for added security
+        }
         // Delay redirect to show success message
         setTimeout(() => {
-          const successUrl = new URL(data.redirectUrl)
-          successUrl.searchParams.append('userUuid', data.userUuid)
-          successUrl.searchParams.append('role', data.role)
-          window.location.href = successUrl.toString()
+          window.close()
         }, 3000)
       } else {
         throw new Error(data.error || 'Failed to sign up')
@@ -72,6 +82,12 @@ export default function ExternalSignupForm() {
         description: error instanceof Error ? error.message : 'Failed to sign up',
         variant: 'destructive',
       })
+      if (window.opener) {
+        window.opener.postMessage({
+          type: 'SIGNUP_ERROR',
+          error: error instanceof Error ? error.message : 'Failed to sign up'
+        }, '*') // Replace '*' with the external app's origin for added security
+      }
     } finally {
       setIsLoading(false)
     }
