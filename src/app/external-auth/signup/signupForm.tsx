@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
+import { Toaster } from "@/components/ui/toaster"
 import { Icons } from '@/app/ui/icons'
 import { useRouter } from 'next/navigation'
 
@@ -123,6 +124,7 @@ export default function ExternalSignupForm() {
           </div>
         </form>
       </div>
+      <Toaster />
     </div>
   )
 }
