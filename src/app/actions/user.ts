@@ -16,7 +16,7 @@ export async function signUpUser(email: string, password: string) {
   }
 }
 
-export async function signUpExternalUser(email: string, password: string, appId: string) {
+export async function signUpExternalUser(email: string, password: string, appId: string, isAdmin: boolean = false) {
   try {
     // Use admin SDK to create user
     const userRecord = await adminAuth.createUser({
@@ -24,12 +24,16 @@ export async function signUpExternalUser(email: string, password: string, appId:
       password: password,
     });
 
-    // Store additional information in Firestore
-    await adminDb.collection('users').doc(userRecord.uid).set({
-      email: email,
-      appId: appId,
-      createdAt: new Date().toISOString(),
-    });
+    // Set custom claims for user role
+    await adminAuth.setCustomUserClaims(userRecord.uid, { role: 'admin' });
+
+    // Store the user-app association in Firestore
+    await adminDb.collection('adminApps').doc(appId).set({
+      [userRecord.uid]: {
+        email: email,
+        createdAt: new Date().toISOString(),
+      }
+    }, { merge: true });
 
     return { success: true, uid: userRecord.uid };
   } catch (error) {
