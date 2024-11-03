@@ -14,6 +14,9 @@ interface User {
       creationTime: string
       lastRefreshTime: string | null
     }
+    customClaims: {
+      role: string | null
+    }
 }
 
 interface ApiResponse {
@@ -92,6 +95,9 @@ function UserList() {
                       Status
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold ">
+                      Role
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold ">
                       Last Sign In
                     </th>
                     <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -101,7 +107,7 @@ function UserList() {
                 </thead>
                 <tbody className={`divide-y ${theme === 'dark' ? 'divide-white/5' : 'divide-gray-200'}`}>
                   {users.map((person) => (
-                    <tr key={person.email}>
+                    <tr key={person.uid}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium sm:pl-6">{person.email}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.metadata.creationTime}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.emailVerified ? 'Yes' : 'No'}</td>
@@ -118,6 +124,7 @@ function UserList() {
                           </span>
                         )}
                       </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.customClaims?.role}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.metadata.lastSignInTime}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">

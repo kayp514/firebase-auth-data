@@ -41,6 +41,7 @@ export default function DashboardLayout() {
   const [currentView, setCurrentView] = useState('Users')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [userRole, setUserRole] = useState<string | null>(null)
   const { theme, setTheme } = useTheme()
   const router = useRouter()
   const { toast } = useToast()
