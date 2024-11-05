@@ -65,7 +65,8 @@ export default function ExternalSignupForm() {
               status: 'success',
               email: email,
               userUuid: data.userUuid,
-              role: data.role
+              role: data.role,
+              created: data.createdAt
             }
           }, '*') // Replace '*' with the external app's origin for added security
         }
