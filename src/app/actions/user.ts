@@ -3,6 +3,7 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { clientAuth } from "@/app/lib/firebaseClient";
 import { adminAuth, adminDb } from "@/app/lib/firebaseAdmin";
+import { create } from "domain";
 
 export async function signUpUser(email: string, password: string) {
   try {
@@ -35,7 +36,7 @@ export async function signUpExternalUser(email: string, password: string, appId:
       }
     }, { merge: true });
 
-    return { success: true, uid: userRecord.uid, role: 'admin' };
+    return { success: true, uid: userRecord.uid, role: 'admin', created: userRecord.metadata.creationTime };
   } catch (error) {
     console.error("Error signing up external user:", error);
     return { success: false, error: "Failed to create account" };

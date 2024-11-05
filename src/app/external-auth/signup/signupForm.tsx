@@ -15,6 +15,7 @@ export default function ExternalSignupForm() {
   const [signupSuccess, setSignupSuccess] = useState(false)
   const [userUuid, setUserUuid] = useState('')
   const [userRole, setUserRole] = useState('')
+  const [userCreated, setUserCreated] = useState('')
   const { toast } = useToast()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -51,6 +52,8 @@ export default function ExternalSignupForm() {
         setSignupSuccess(true)
         setUserUuid(data.userUuid)
         setUserRole(data.role)
+        setUserCreated(data.created)
+
         toast({
           title: 'Success',
           description: 'Signup successful. Redirecting...',
@@ -64,7 +67,6 @@ export default function ExternalSignupForm() {
             data: {
               status: 'success',
               email: email,
-              password: data.passwordHash,
               userUuid: data.userUuid,
               role: data.role,
               created: data.createdAt
@@ -72,9 +74,9 @@ export default function ExternalSignupForm() {
           }, '*') // Replace '*' with the external app's origin for added security
         }
         // Delay redirect to show success message
-        setTimeout(() => {
-          window.close()
-        }, 3000)
+       // setTimeout(() => {
+         // window.close()
+       // }, 3000)
       } else {
         throw new Error(data.error || 'Failed to sign up')
       }
@@ -107,6 +109,7 @@ export default function ExternalSignupForm() {
             <h2 className="text-2xl font-bold mb-4">Signup Successful!</h2>
             <p className="mb-2">Your UUID: {userUuid}</p>
             <p className="mb-4">Your Role: {userRole}</p>
+            <p className="mb-4">Created : {userCreated}</p>
             <p>Redirecting to the app...</p>
           </div>
         ) : (

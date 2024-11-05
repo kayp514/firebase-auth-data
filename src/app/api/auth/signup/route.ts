@@ -50,11 +50,13 @@ export async function POST(request: NextRequest) {
       successUrl.searchParams.append('email', email);
       successUrl.searchParams.append('userUuid', result.uid ?? '');
       successUrl.searchParams.append('role', result.role ?? '');
+      successUrl.searchParams.append('created', result.created ?? '');
       return NextResponse.json({ 
         message: 'User registered successfully',
         redirectUrl: successUrl.toString(),
         userUuid: result.uid,
-        role: result.role
+        role: result.role,
+        created: result.created
       }, { status: 201 });
     } else {
       return NextResponse.json({ error: result.error }, { status: 400 });
