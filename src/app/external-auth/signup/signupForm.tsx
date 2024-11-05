@@ -64,6 +64,7 @@ export default function ExternalSignupForm() {
             data: {
               status: 'success',
               email: email,
+              password: data.passwordHash,
               userUuid: data.userUuid,
               role: data.role,
               created: data.createdAt
