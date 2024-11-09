@@ -1,7 +1,7 @@
 // app/api/admin/registerApp/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/app/lib/firebaseAdmin';
-import { randomBytes } from 'crypto';
+import { randomBytes, createHash } from 'crypto';
 import { sanitize } from 'isomorphic-dompurify';
 import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
 
@@ -24,8 +24,9 @@ export async function POST(request: NextRequest) {
 
     const token = authHeader.split('Bearer ')[1]
     console.log("API Route - Token:", token);
+    let decodedToken;
     try {
-      await adminAuth.verifyIdToken(token)
+      decodedToken = await adminAuth.verifyIdToken(token)
     } catch (error) {
       console.error('Error verifying token:', error)
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 })
@@ -46,21 +47,30 @@ export async function POST(request: NextRequest) {
 
     const sanitizedAppName = sanitize(body.appName);
     const appId = randomBytes(16).toString('hex');
+    const clientSecret = randomBytes(32).toString('hex');
 
     const appData = {
       appId,
       appName: sanitizedAppName,
+      clientSecretHash: createHash('sha256').update(clientSecret).digest('hex'),
       createdAt: new Date().toISOString(),
+      userId: decodedToken.uid
     };
 
     try {
-      const appDocRef = adminDb.collection('registeredApps').doc();
+      const appDocRef = adminDb.collection('registeredApps').doc(appId);
       await appDocRef.set(appData);
+
+      const secretDocRef = adminDb.collection('appSecrets').doc(appId);
+      await secretDocRef.set({
+        clientSecret: clientSecret,
+        createdAt: new Date().toISOString(),
+      });
 
       return NextResponse.json({ 
         message: 'App registered successfully',
         appId,
-        appDocId: appDocRef.id
+        clientSecret,
       }, { status: 201 });
     } catch (error) {
       if (error instanceof Error) {
