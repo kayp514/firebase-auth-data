@@ -1,3 +1,4 @@
+//lib/firebaseAdmin.ts
 
 import admin from 'firebase-admin';
 

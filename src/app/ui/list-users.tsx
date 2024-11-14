@@ -1,7 +1,8 @@
-import useSWR from 'swr'
+'use client'
+
 import { useTheme } from 'next-themes'
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ListUsersSkeleton } from '@/app/ui/skeletons'
+import { ListUsersSkeleton } from './skeletons'
 import { Suspense, useEffect, useState } from 'react'
 
 interface User {

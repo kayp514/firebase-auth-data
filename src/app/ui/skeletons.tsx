@@ -31,7 +31,7 @@ export function ListUsersSkeleton() {
                 <tbody className={`divide-y ${theme === 'dark' ? 'divide-white/5' : 'divide-gray-200'}`}>
                   {Array(5).fill(null).map((_, rowIndex) => (
                     <tr key={rowIndex}>
-                      {Array(6).fill(null).map((_, cellIndex) => (
+                      {Array(6).fill(null).map((_, cellIndex?) => (
                         <td key={cellIndex} className="whitespace-nowrap px-3 py-4 text-sm">
                           <div className="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
                         </td>

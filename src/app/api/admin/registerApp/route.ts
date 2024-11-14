@@ -5,6 +5,18 @@ import { randomBytes, createHash } from 'crypto';
 import { sanitize } from 'isomorphic-dompurify';
 import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
 
+const MAIN_DOMAIN = 'ternsecure.com';
+
+function generateSubdomain(appName: string): string {
+  // Remove non-alphanumeric characters and convert to lowercase
+  const sanitized = appName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  // Take the first 10 characters (or less if the name is shorter)
+  const prefix = sanitized.slice(0, 10);
+  // Add a random suffix
+  const suffix = randomBytes(4).toString('hex');
+  return `${prefix}-${suffix}`;
+}
+
 export async function POST(request: NextRequest) {
   const response = NextResponse.next();
   setCorsHeaders(response);
@@ -39,7 +51,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
     }
 
-    const appName = body.appName;
+    const { appName } = body;
 
     if (!appName || typeof appName !== 'string') {
       return NextResponse.json({ error: 'Invalid or missing appName' }, { status: 400 });
@@ -48,11 +60,15 @@ export async function POST(request: NextRequest) {
     const sanitizedAppName = sanitize(body.appName);
     const appId = randomBytes(16).toString('hex');
     const clientSecret = randomBytes(32).toString('hex');
+    const subdomain = generateSubdomain(sanitizedAppName);
+    const defaultDomain = `${subdomain}.${MAIN_DOMAIN}`;
 
     const appData = {
       appId,
       appName: sanitizedAppName,
       clientSecretHash: createHash('sha256').update(clientSecret).digest('hex'),
+      defaultDomain,
+      mainDomain: MAIN_DOMAIN,
       createdAt: new Date().toISOString(),
       userId: decodedToken.uid
     };
@@ -71,6 +87,9 @@ export async function POST(request: NextRequest) {
         message: 'App registered successfully',
         appId,
         clientSecret,
+        defaultDomain,
+        mainDomain: MAIN_DOMAIN,
+        subdomain
       }, { status: 201 });
     } catch (error) {
       if (error instanceof Error) {

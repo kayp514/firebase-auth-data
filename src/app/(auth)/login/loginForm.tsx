@@ -1,14 +1,16 @@
+//app/(auth)/login/loginForm.tsx
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from '@/app/lib/auth'
+import { setServerSession } from '@/app/actions/auth'
 import { useTheme } from 'next-themes'
 import SignupDialog from '../signup/signupDialog'
 import { useToast } from '@/hooks/use-toast'
 import { FirebaseError } from 'firebase/app'
 import { Toaster } from '@/components/ui/toaster'
-import { Icons } from '@/app/ui/icons'
+import { Icons } from '../../ui/icons'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -23,12 +25,13 @@ export default function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
     try {
-      await signIn(email, password)
+      const { token } = await signIn(email, password);
+      await setServerSession(token);
       toast({
         title: 'Success',
         description: 'Connected.',
       })
-      router.push('/dashboard')
+      router.push('/apps')
     } catch (error) {
       console.error('Login error:', error)
       if (error instanceof FirebaseError) {
@@ -60,11 +63,6 @@ export default function LoginForm() {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <img
-            alt=""
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            className="mx-auto h-10 w-auto"
-          />
           <h2 className={`mt-6 text-center text-2xl font-bold leading-9 tracking-tight ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
             Sign in to your account
           </h2>

@@ -49,13 +49,13 @@ export async function POST(request: NextRequest) {
       successUrl.searchParams.append('status', 'success');
       successUrl.searchParams.append('email', email);
       successUrl.searchParams.append('userUuid', result.uid ?? '');
-      successUrl.searchParams.append('role', result.role ?? '');
+      successUrl.searchParams.append('admin', result.admin ?? '');
       successUrl.searchParams.append('created', result.created ?? '');
       return NextResponse.json({ 
         message: 'User registered successfully',
         redirectUrl: successUrl.toString(),
         userUuid: result.uid,
-        role: result.role,
+        admin: result.admin,
         created: result.created
       }, { status: 201 });
     } else {

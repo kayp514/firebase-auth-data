@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
 
     if (appId) {
       // Fetch a specific app by ID
-      const appDoc = await adminDb.collection('registeredApps').doc(appId).get();
+      const appDoc = await adminDb.collection('callbackUrl').doc(appId).get();
       
       if (!appDoc.exists) {
         return NextResponse.json({ error: 'App not found' }, { status: 404 });

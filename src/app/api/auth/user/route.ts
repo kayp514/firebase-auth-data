@@ -1,4 +1,4 @@
-// app/api/user/route.ts
+// app/api/auth/user/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/app/lib/firebaseAdmin';

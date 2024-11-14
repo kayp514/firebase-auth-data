@@ -8,7 +8,7 @@ import { useTheme } from 'next-themes'
 import { useToast } from '@/hooks/use-toast'
 import { FirebaseError } from 'firebase/app'
 import { Toaster } from '@/components/ui/toaster'
-import { Icons } from '@/app/ui/icons'
+import { Icons } from '../../ui/icons'
 import { app } from 'firebase-admin'
 
 interface ExternalLoginFormProps {

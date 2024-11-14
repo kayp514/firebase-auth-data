@@ -1,10 +1,13 @@
+//lib/auth.ts
+
 import { clientAuth } from './firebaseClient';
 import { signInWithEmailAndPassword, signOut as firebaseSignOut, User } from 'firebase/auth';
 
-export async function signIn(email: string, password: string): Promise<User> {
+export async function signIn(email: string, password: string): Promise<{ user: User, token: string }> {
   try {
     const userCredential = await signInWithEmailAndPassword(clientAuth, email, password);
-    return userCredential.user;
+    const token = await userCredential.user.getIdToken();
+    return { user: userCredential.user, token };
   } catch (error) {
     console.error('Error signing in:', error);
     throw error;
