@@ -3,7 +3,7 @@
 import { cache } from 'react'
 
 export const getApps = cache(async (session: any, appId?: string) => {
-  const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'http://localhost:3000';
+  const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://ternsecure.com';
   
   const queryParam = appId 
     ? `appId=${appId}`
