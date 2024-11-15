@@ -13,6 +13,10 @@ interface AppIdDashboardContentProps {
 
 export default function AppIdDashboardContent({ appConfig }: AppIdDashboardContentProps) {
 
+  if (!appConfig) {
+    return <div>Loading...</div>
+  }
+
   return (
     <>
     {/* Dashboard content */}

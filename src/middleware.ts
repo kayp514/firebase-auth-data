@@ -8,17 +8,12 @@ export const config = {
 export async function middleware(request: NextRequest) {
     const isLoginPage = request.nextUrl.pathname === '/login';
     const isSignup = request.nextUrl.pathname === '/signup';
+    const isPublicRoute = isLoginPage || isSignup ;
 
-    const token = request.cookies.get('auth_token')
-
-    // Allow access to login, signup, and root pages without authentication
-    if (isLoginPage || isSignup) {
+    if (isPublicRoute) {
       return NextResponse.next();
     }
 
-    if (!token) {
-      console.log('No token found in middleware, redirecting to login');
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+    return NextResponse.next();
 
 }

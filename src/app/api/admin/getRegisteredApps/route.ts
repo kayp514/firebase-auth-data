@@ -1,3 +1,5 @@
+//app/api/admin/getRegisterApps.tsx
+
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/app/lib/firebaseAdmin';
 import { setCorsHeaders } from '@/lib/securityUtils';

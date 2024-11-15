@@ -1,6 +1,8 @@
+//app/apps/layout.tsx
+
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Bell, ChevronDown, LogOut } from 'lucide-react'
 import { clientAuth } from '@/app/lib/firebaseClient'
@@ -16,7 +18,8 @@ import {
 import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
-export default function AppsLayout({ children }: { children: React.ReactNode }) {
+
+export default async function AppsLayout({ children }: { children: React.ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const router = useRouter()
   const { theme } = useTheme()

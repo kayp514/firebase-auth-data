@@ -17,11 +17,12 @@ export default async function AppIdPage({ params }: { params: Promise<{ appId: s
   }
 
   const data = await getApps(session, appId)
+  console.log('Data from ID page', data)
 
-  if (!data) {
+  if (!data || !data.app) {
     notFound()
   }
 
 
-  return <AppIdDashboardContent appConfig={data} />
+  return <AppIdDashboardContent appConfig={data.app} />
 }
