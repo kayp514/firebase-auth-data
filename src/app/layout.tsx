@@ -32,16 +32,16 @@ export default function RootLayout({
 
 
   return (
-<TernSecureProvider>
+    <TernSecureProvider>
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-    {children}
-            <Analytics />
-            <SpeedInsights />
+          {children}
+          <Analytics />
+          <SpeedInsights />
       </body>
     </html>
-  </TernSecureProvider>
-  )
+    </TernSecureProvider>
+  );
 }

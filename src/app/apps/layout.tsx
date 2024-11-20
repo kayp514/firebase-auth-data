@@ -16,15 +16,16 @@ import {
 import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
-import { useAuth } from '@/hooks/useAuth'
-import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { useAuth } from '../providers/TernSecureProvider'
+import { useCurrentUser } from '../providers/TernSecureProvider'
 
 
 
 export default function AppsLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { theme } = useTheme()
-  const { isSignedIn, loading, userId} = useAuth()
+  const { authState } = useAuth()
+  const { isSignedIn, loading, userId} = authState
   const { currentUser, loading: userLoading } = useCurrentUser()
   const user = currentUser || {email: null}
 

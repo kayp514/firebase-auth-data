@@ -23,12 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { clientAuth } from '@/app/lib/firebaseClient'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { getApps } from '../lib/getApps'
 
 const navigation = [
-  { name: 'Dashboard', icon: Home, href: '' },
+  { name: 'Dashboard', icon: Home, href: '/' },
   { name: 'Users', icon: Users, href: '/users' },
   { name: 'Callbacks', icon: Bell, href: '/callbacks' },
   { name: 'Settings', icon: Settings, href: '/settings' },

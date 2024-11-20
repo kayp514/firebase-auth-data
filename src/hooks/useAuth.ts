@@ -5,6 +5,7 @@ import { clientAuth } from '@/app/lib/firebaseClient'
 import { User, onAuthStateChanged } from "firebase/auth"
 import { handleAuthError } from '@/auth/errorHandling'
 
+
 interface AuthState {
   loading: boolean
   isSignedIn: boolean

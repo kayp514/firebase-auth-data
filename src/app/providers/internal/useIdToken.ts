@@ -1,11 +1,10 @@
-// app/hooks/useIdToken.ts
-
 'use client'
 
-import { useAuth } from './useAuth'
 import { useState, useCallback, useEffect } from 'react'
 import { clientAuth } from '@/app/lib/firebaseClient'
 import { User } from 'firebase/auth'
+import { useAuth } from './useAuth'
+import { useInternalContext } from '../TernSecureProvider'
 
 interface IdTokenResult {
   token: string | null
@@ -20,19 +19,20 @@ interface IdTokenState {
   tokenResult: IdTokenResult | null
   loading: boolean
   error: Error | null
-  refreshToken: () => Promise<void>
 }
 
-export function useIdToken(): IdTokenState {
-  const { isSignedIn, loading: authLoading } = useAuth()
+export function useIdTokenInternal() {
+    useInternalContext('useIdToken')
+    const { authState } = useAuth()
+    const { loading: authLoading, isSignedIn } = authState
+
   const [tokenState, setTokenState] = useState<IdTokenState>({
     tokenResult: null,
     loading: true,
-    error: null,
-    refreshToken: async () => {}
+    error: null
   })
 
-  const getFormattedTokenResult = async (user: User) => {
+  const getFormattedTokenResult = useCallback(async (user: User): Promise<IdTokenResult> => {
     const result = await user.getIdTokenResult()
     return {
       token: result.token,
@@ -42,36 +42,35 @@ export function useIdToken(): IdTokenState {
       authTime: result.authTime,
       signInProvider: result.signInProvider
     }
-  }
+  }, [])
 
   const refreshToken = useCallback(async () => {
     if (!isSignedIn || !clientAuth.currentUser) {
-      setTokenState(prev => ({
-        ...prev,
+      setTokenState({
         tokenResult: null,
         loading: false,
         error: null
-      }))
+      })
       return
     }
 
     try {
+      setTokenState(prev => ({ ...prev, loading: true }))
       const tokenResult = await getFormattedTokenResult(clientAuth.currentUser)
-      setTokenState(prev => ({
-        ...prev,
+      setTokenState({
         tokenResult,
         loading: false,
         error: null
-      }))
+      })
     } catch (error) {
-      setTokenState(prev => ({
-        ...prev,
+      console.error('Failed to refresh token:', error)
+      setTokenState({
         tokenResult: null,
         loading: false,
         error: error instanceof Error ? error : new Error('Failed to get token')
-      }))
+      })
     }
-  }, [isSignedIn])
+  }, [isSignedIn, getFormattedTokenResult])
 
   useEffect(() => {
     if (!authLoading) {
@@ -79,5 +78,10 @@ export function useIdToken(): IdTokenState {
     }
   }, [authLoading, refreshToken])
 
-  return tokenState
+  return {
+    ...tokenState,
+    refreshToken
+  }
 }
+
+export const useIdToken = useIdTokenInternal

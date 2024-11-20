@@ -2,7 +2,7 @@
 'use client'
 import { useState } from "react"
 import { redirect } from "next/navigation"
-import { useAuth, useCurrentUser, useSession, useIdToken } from "./providers/TernSecureProvider";
+import { useAuth, useCurrentUser, useSession, useIdToken } from "./providers/TernSecureProvider"
 
 
 
@@ -10,8 +10,9 @@ export default function Home() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isUserDataExpanded, setIsUserDataExpanded] = useState(false);
   const [isTokenDataExpanded, setIsTokenDataExpanded] = useState(false);
+  const { authState } = useAuth()
 
-  const { isSignedIn, loading, userId} = useAuth()
+  const { isSignedIn, loading, userId } = authState
   const { currentUser, loading: userLoading } = useCurrentUser()
   const { accessToken, expirationTime, status, isLoading } = useSession()
   const { tokenResult, loading: tokenLoading, error, refreshToken } = useIdToken()

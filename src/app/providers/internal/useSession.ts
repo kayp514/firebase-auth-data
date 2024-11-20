@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useAuth } from './useAuth'
 import { clientAuth } from '@/app/lib/firebaseClient'
-import { User } from 'firebase/auth'
+import { useInternalContext } from '../TernSecureProvider'
 
 interface SessionData {
   accessToken: string | null
@@ -14,8 +14,11 @@ interface SessionData {
 
 type SessionStatus = 'active' | 'expired' | 'refreshing' | 'inactive'
 
-export function useSession() {
-  const { isSignedIn, loading: authLoading } = useAuth()
+export function useSessionInternal() {
+    useInternalContext('useSession')
+    const { authState } = useAuth()
+    const { loading: authLoading, isSignedIn } = authState
+
   const [sessionData, setSessionData] = useState<SessionData>({
     accessToken: null,
     expirationTime: null,
@@ -43,10 +46,11 @@ export function useSession() {
     }
 
     try {
-      const user = clientAuth.currentUser as User
+      setSessionData(prev => ({ ...prev, isLoading: true }))
+      const user = clientAuth.currentUser
       if (!user) throw new Error('No authenticated user')
 
-      const idTokenResult = await user.getIdTokenResult(true)
+      const idTokenResult = await user.getIdTokenResult()
       setSessionData({
         accessToken: idTokenResult.token,
         expirationTime: new Date(idTokenResult.expirationTime).getTime(),
@@ -78,3 +82,5 @@ export function useSession() {
     refreshSession
   }
 }
+
+export const useSession = useSessionInternal
