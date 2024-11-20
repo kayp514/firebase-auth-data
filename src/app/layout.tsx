@@ -4,8 +4,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react"
-import { getServerSession } from './lib/authServer'
-import { TernSecure } from './providers/TernSecure'
+import { TernSecureProvider } from './providers/TernSecureProvider'
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,26 +23,23 @@ export const metadata: Metadata = {
   description: "Developer by KayP",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
 
-  const initialSession = await getServerSession()
 
   return (
+<TernSecureProvider>
     <html lang="en">
-      <TernSecure initialSession={initialSession}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
-        <Analytics />
+    {children}
+            <Analytics />
       </body>
-      </TernSecure>
     </html>
-  );
+  </TernSecureProvider>
+  )
 }

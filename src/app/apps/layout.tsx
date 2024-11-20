@@ -1,9 +1,7 @@
 //app/apps/layout.tsx
-
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 import { Bell, ChevronDown, LogOut } from 'lucide-react'
 import { clientAuth } from '@/app/lib/firebaseClient'
 import { Button } from '@/components/ui/button'
@@ -17,12 +15,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useAuth, useCurrentUser } from '@/app/providers/TernSecureProvider'
 
 
-export default async function AppsLayout({ children }: { children: React.ReactNode }) {
-  const [userEmail, setUserEmail] = useState<string | null>(null)
+
+export default function AppsLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { theme } = useTheme()
+  const {isSignedIn, loading, userId} = useAuth()
+  const { currentUser } = useCurrentUser()
+  const user = currentUser
 
 
   const handleSignOut = async () => {
@@ -33,6 +35,16 @@ export default async function AppsLayout({ children }: { children: React.ReactNo
       console.error('Error signing out:', error)
     }
   }
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if(!isSignedIn || !user) {
+    redirect('/login')
+  }
+
+
 
   return (
     <div className="flex h-screen">
@@ -50,9 +62,9 @@ export default async function AppsLayout({ children }: { children: React.ReactNo
                 <Button variant="ghost" className="relative h-8 rounded-full flex items-center gap-2 hover:text-gray-900 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-200">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src="/placeholder-avatar.jpg" alt="User avatar" />
-                    <AvatarFallback>{userEmail ? userEmail[0].toUpperCase() : 'U'}</AvatarFallback>
+                    <AvatarFallback>{user.email ? user.email[0].toUpperCase() : 'U'}</AvatarFallback>
                   </Avatar>
-                  <span className="hidden md:inline">{userEmail || 'Loading...'}</span>
+                  <span className="hidden md:inline">{user.email || 'Loading...'}</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>

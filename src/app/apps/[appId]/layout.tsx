@@ -3,8 +3,9 @@
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppDashboardSidebar } from '@/app/ui/sidebar'
 
-export default function AppDashboardLayout({ children }: { children: React.ReactNode }) {
 
+export default function AppDashboardLayout({ children }: { children: React.ReactNode }) {
+ 
 
 
   return (

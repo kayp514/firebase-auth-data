@@ -10,6 +10,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { useTheme } from 'next-themes'
 import AppRegisterDialog from '@/app/ui/registerAppDialog'
 
+
+
 interface App {
   id: string
   defaultDomain: string
@@ -25,13 +27,13 @@ interface User {
 
 interface OverviewProps {
     initialApps: App[]
-    user: User
   }
 
-export default function OverviewUI({ initialApps, user }: OverviewProps) {
+export default function OverviewUI({ initialApps }: OverviewProps) {
   const [apps, setApps] = useState<App[]>(initialApps)
   const { theme } = useTheme()
   const [showRegisterDialog, setShowRegisterDialog] = useState(false)
+
 
 
   const handleRegisterApp = () => {
@@ -42,6 +44,7 @@ export default function OverviewUI({ initialApps, user }: OverviewProps) {
     setApps(prevApps => [...prevApps, newApp])
     setShowRegisterDialog(false)
   }
+
 
   return (
     <div className="p-6">

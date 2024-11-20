@@ -3,7 +3,7 @@
 
 import { cookies } from 'next/headers';
 import { adminAuth } from './firebaseAdmin';
-import { FirebaseError } from 'firebase-admin/app';
+
 
 export interface User {
     uid: string;
@@ -11,17 +11,35 @@ export interface User {
   }
 
 export interface Session {
-    user: User;
-    token: string;
-    tokenDetails: {
-        issuedAt: Date;
-        expiresAt: Date;
-    };
+    user: User | null;
+    token: string | null;
+    error: Error | null;
 }
+
+export async function createSessionCookie(idToken: string) {
+  try {
+    const expiresIn = 60 * 60 * 24 * 5 * 1000;
+      const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
+
+      const cookieStore = await cookies();
+      cookieStore.set('session', sessionCookie, {
+          maxAge: expiresIn,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+      });
+      console.log('createsessioncookies function token:', sessionCookie)
+      return { success: true, message: 'Session created' };
+  } catch (error) {
+      console.error('Session creation error:', error);
+      return { success: false, message: 'Failed to create session' };
+  }
+}
+
 
 export async function setServerSession(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set('auth_token', token, {
+  cookieStore.set('session', token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
@@ -30,53 +48,45 @@ export async function setServerSession(token: string) {
   });
 }
 
-export async function getServerSession(): Promise<Session | null> {
+
+export async function getServerSessionToken() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('auth_token')?.value;
+  const sessionCookie = cookieStore.get('session')?.value;
 
-  if (!token) {
-    console.log('No token found in getServerSession');
-    return null;
+  if (!sessionCookie) {
+    throw new Error('No session cookie found')
   }
-
+    
   try {
-    const decodedToken = await adminAuth.verifyIdToken(token)
-
-    const expirationTime = new Date(decodedToken.exp * 1000);
-    const now = new Date();
-    const fiveMinutes = 5 * 60 * 1000;
-
-    if (expirationTime.getTime() - now.getTime() < fiveMinutes) {
-        console.log('Token is about to expire, clearing session');
-        return null;
+    const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie)
+    return {
+      token: sessionCookie,
+      userId: decodedClaims.uid
     }
-    return { 
-      user: {
-        uid: decodedToken.uid,
-        email: decodedToken.email || ''
-      },
-      token: token,
-      tokenDetails: {
-        issuedAt: new Date(decodedToken.iat * 1000),
-        expiresAt: new Date(decodedToken.exp * 1000)
-      }
-    };
-} catch (error) {
-    if (error && typeof error === 'object' && 'code' in error) {
-        const firebaseError = error as FirebaseError;
-        if (firebaseError.code === 'auth/id-token-expired' || firebaseError.code === 'auth/id-token-revoked') {
-            console.error('Token has expired or been revoked:', firebaseError);
-        } else {
-            console.error('Error verifying token:', error);
-        }
-    } else {
-        console.error('Unexpected error:', error);
-    }
-    return null;
-}
-}
-
-
-export async function clearServerSession() {
-    return (await cookies()).set('auth_token', 'value', { maxAge: 0 })
+  } catch (error) {
+    console.error('Error verifying session:', error)
+    throw new Error('Invalid Session')
   }
+}
+
+
+
+/*
+  export async function GET(request: NextRequest) {
+    const cookieStore = await cookies();
+    const sessionCookie = cookieStore.get('session')?.value
+  
+    if (!sessionCookie) {
+      return NextResponse.json({ isAuthenticated: false }, { status: 401 })
+    }
+  
+    try {
+      const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie, true)
+      return NextResponse.json({ isAuthenticated: true, user: decodedClaims }, { status: 200 })
+    } catch (error) {
+      console.error('Error verifying session cookie:', error)
+      return NextResponse.json({ isAuthenticated: false }, { status: 401 })
+    }
+  }
+
+*/

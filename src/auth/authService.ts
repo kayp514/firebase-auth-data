@@ -8,14 +8,14 @@ import {
 } from 'firebase/auth';
 import { clientAuth } from '../app/lib/firebaseClient';
 import { adminAuth, adminDb } from '../app/lib/firebaseAdmin';
-import { logAuthError } from './errorHandling';
+import { handleAuthError } from './errorHandling';
 
 export async function signUp(email: string, password: string): Promise<User> {
   try {
     const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
     return userCredential.user;
   } catch (error) {
-    logAuthError(error);
+    handleAuthError(error);
     throw error;
   }
 }
@@ -44,7 +44,7 @@ export async function signIn(email: string, password: string): Promise<{ token: 
     const token = await adminAuth.createCustomToken(userCredential.user.uid);
     return { token, user: userCredential.user };
   } catch (error) {
-    logAuthError(error);
+    handleAuthError(error);
     throw error;
   }
 }
@@ -53,7 +53,7 @@ export async function signOut(): Promise<void> {
   try {
     await firebaseSignOut(clientAuth);
   } catch (error) {
-    logAuthError(error);
+    handleAuthError(error);
     throw error;
   }
 }
@@ -63,7 +63,7 @@ export async function verifyAuthentication(token: string): Promise<boolean> {
     await adminAuth.verifyIdToken(token);
     return true;
   } catch (error) {
-    logAuthError(error);
+    handleAuthError(error);
     return false;
   }
 }

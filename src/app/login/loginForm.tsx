@@ -1,16 +1,14 @@
-//app/(auth)/login/loginForm.tsx
+//app//login/loginForm.tsx
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { signIn } from '@/app/lib/auth'
-import { setServerSession } from '@/app/actions/auth'
+import { redirect, useRouter } from 'next/navigation'
+import {login } from '@/app/actions/auth'
 import { useTheme } from 'next-themes'
 import SignupDialog from '../signup/signupDialog'
 import { useToast } from '@/hooks/use-toast'
-import { FirebaseError } from 'firebase/app'
 import { Toaster } from '@/components/ui/toaster'
-import { Icons } from '../../ui/icons'
+import { Icons } from '../ui/icons'
 
 export default function LoginForm() {
   const [email, setEmail] = useState('')
@@ -21,44 +19,28 @@ export default function LoginForm() {
   const { toast } = useToast()
 
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const { token } = await signIn(email, password);
-      await setServerSession(token);
-      toast({
-        title: 'Success',
-        description: 'Connected.',
-      })
-      router.push('/apps')
-    } catch (error) {
-      console.error('Login error:', error)
-      if (error instanceof FirebaseError) {
-        if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          toast({
-            title: 'Error',
-            description: 'Invalid email or password',
-            variant: 'destructive'
-          })
+      const result = await login(email, password)
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: result.message,
+        })
+        redirect('/'); 
       } else {
         toast({
           title: 'Error',
-          description: `An error occurred: ${error.message}`,
+          description: result.message,
           variant: 'destructive'
-          })
-        }
-      } else {
-        toast({
-            title: 'Error',
-            description: 'An unexpected error occurred. Please try again later.',
-            variant: 'destructive'
-          })
-        }
-      } finally {
-        setIsLoading(false)
+        })
       }
+    } finally {
+      setIsLoading(false)
     }
+  }
   
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -70,7 +52,7 @@ export default function LoginForm() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div className="px-6 py-12 shadow sm:rounded-lg sm:px-12 ">
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-6">
               <div>
                 <label htmlFor="email" className={`block text-sm font-medium leading-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
                   Email address

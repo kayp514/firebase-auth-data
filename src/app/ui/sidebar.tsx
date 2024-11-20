@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { clientAuth } from '@/app/lib/firebaseClient'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { getApps } from '../lib/getApps'
 
 const navigation = [
   { name: 'Dashboard', icon: Home, href: '' },
@@ -45,32 +47,13 @@ export function AppDashboardSidebar() {
   const [apps, setApps] = useState<App[]>([])
   const { theme, setTheme } = useTheme()
   const pathname = usePathname()
+  const userId = useCurrentUser().currentUser?.uid
+  
 
   useEffect(() => {
-    const fetchApps = async () => {
-      try {
-        const user = clientAuth.currentUser
-        if (!user) return
-
-        const token = await user.getIdToken()
-        const response = await fetch('/api/admin/getRegisteredApps', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch apps')
-        }
-
-        const data = await response.json()
-        setApps(data.apps)
-      } catch (error) {
-        console.error('Error fetching apps:', error)
-      }
-    }
-
-    fetchApps()
+    getApps().then((data) => {
+      setApps(data.apps)
+    })
   }, [])
 
     const handleAppChange = (appId: string) => {

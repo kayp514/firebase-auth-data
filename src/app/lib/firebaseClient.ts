@@ -1,7 +1,7 @@
 //lib/firebaseClient.ts
 
 import { initializeApp } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
+import {  getAuth, setPersistence, browserSessionPersistence, inMemoryPersistence, browserLocalPersistence, connectAuthEmulator } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const clientConfig = {
@@ -14,6 +14,8 @@ const clientConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 }
 
+
 const clientApp = initializeApp(clientConfig)
 export const clientAuth = getAuth(clientApp)
+setPersistence(clientAuth, browserLocalPersistence)
 export const db = getFirestore(clientApp)

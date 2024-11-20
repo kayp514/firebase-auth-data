@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { signUpUser } from '@/app/actions/user'
 import { useToast } from '@/hooks/use-toast'
-import { Icons } from '../../ui/icons'
+import { Icons } from '../ui/icons'
 
 export default function SignupForm({onSuccess}: {onSuccess: () => void }) {
     const [error, setError] = useState<string | null>(null)

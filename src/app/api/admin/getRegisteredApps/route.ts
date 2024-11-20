@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.split('Bearer ')[1];
     try {
-      await adminAuth.verifyIdToken(token);
+      await adminAuth.verifySessionCookie(token);
     } catch (error) {
       console.error('Error verifying token:', error);
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
