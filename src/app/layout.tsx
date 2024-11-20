@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { TernSecureProvider } from './providers/TernSecureProvider'
 import "./globals.css";
 
@@ -38,6 +39,7 @@ export default function RootLayout({
       >
     {children}
             <Analytics />
+            <SpeedInsights />
       </body>
     </html>
   </TernSecureProvider>
