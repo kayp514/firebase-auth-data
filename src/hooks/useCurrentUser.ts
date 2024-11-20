@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { User } from "firebase/auth"
 import { clientAuth } from "@/app/lib/firebaseClient"
-import { useAuth } from '@/app/providers/TernSecureProvider'
+import { useAuth } from './useAuth'
 
 interface CurrentUserState {
   currentUser: User | null

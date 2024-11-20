@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { useAuth } from '@/app/providers/TernSecureProvider'
+import { useAuth } from './useAuth'
 import { clientAuth } from '@/app/lib/firebaseClient'
 
 interface SessionData {

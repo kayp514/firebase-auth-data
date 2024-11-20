@@ -23,7 +23,7 @@ export default function Home() {
     )
   ) : null
 
-  if(loading || tokenLoading){
+  if(loading){
     return <div>Loading...</div>
   }
 

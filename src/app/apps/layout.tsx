@@ -15,16 +15,18 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { useAuth, useCurrentUser } from '@/app/providers/TernSecureProvider'
+
+import { useAuth } from '@/hooks/useAuth'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 
 
 export default function AppsLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const { theme } = useTheme()
-  const {isSignedIn, loading, userId} = useAuth()
-  const { currentUser } = useCurrentUser()
-  const user = currentUser
+  const { isSignedIn, loading, userId} = useAuth()
+  const { currentUser, loading: userLoading } = useCurrentUser()
+  const user = currentUser || {email: null}
 
 
   const handleSignOut = async () => {
@@ -40,7 +42,7 @@ export default function AppsLayout({ children }: { children: React.ReactNode }) 
     return <div>Loading...</div>
   }
 
-  if(!isSignedIn || !user) {
+  if(!isSignedIn) {
     redirect('/login')
   }
 

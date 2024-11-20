@@ -4,6 +4,8 @@ import { Suspense } from 'react'
 import OverviewUI from '@/app/ui/overview-ui'
 import { getApps } from '@/app/lib/getApps'
 
+export const dynamic = 'force-dynamic'
+
 export default async function OverviewPage() {
 
   async function AppsData() {

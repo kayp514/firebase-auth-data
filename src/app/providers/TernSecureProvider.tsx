@@ -45,7 +45,7 @@ function useTernSecure(hookName: string) {
 }
 
 export function useAuth() {
-  useTernSecure('useAuth')
+  //useTernSecure('useAuth')
   return useAuthHook()
 }
 
