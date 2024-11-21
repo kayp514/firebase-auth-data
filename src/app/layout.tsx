@@ -20,7 +20,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Firebase Auth and Fetch Data",
+  title: "TernSecure Authentication System",
   description: "Developer by KayP",
 };
 

@@ -16,7 +16,7 @@ interface User {
       lastRefreshTime: string | null
     }
     customClaims: {
-      role: string | null
+      admin: string | null
     }
 }
 
@@ -24,34 +24,15 @@ interface ApiResponse {
   users: User[]
 }
 
-async function getUsers(): Promise<ApiResponse> {
-  const res = await fetch('https://northamerica-northeast1-dev-coffeeconnect-v1.cloudfunctions.net/manageusers')
-  if (!res.ok) throw new Error('Failed to fetch users')
-  return res.json()
-}
 
-
-function UserList() {
+function UserList({ users }: { users: User[] }) {
   const { theme } = useTheme()
-  const [users, setUsers] = useState<User[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    getUsers()
-      .then(data => {
-        if (Array.isArray(data.users)) {
-          setUsers(data.users)
-        } else {
-          setError('Invalid data format received')
-        }
-      })
-      .catch(err => setError(err.message))
-      .finally(() => setIsLoading(false))
-  }, [])
 
-  if (isLoading) {
-    return <ListUsersSkeleton />
+  if (!users) {
+    return <div className="text-center text-red-600">No users found</div>
   }
 
   if (error) {
@@ -96,7 +77,7 @@ function UserList() {
                       Status
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold ">
-                      Role
+                      Admin
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold ">
                       Last Sign In
@@ -125,7 +106,7 @@ function UserList() {
                           </span>
                         )}
                       </td>
-                      <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.customClaims?.role}</td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.customClaims?.admin}</td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm ">{person.metadata.lastSignInTime}</td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">
@@ -143,11 +124,11 @@ function UserList() {
     </div>
   )
 }
-export default function ListUsers() {
+export default function ListUsers({ appConfig }: { appConfig: User[] }) {
 
  return (
       <Suspense fallback={<ListUsersSkeleton />}>
-        <UserList />
+        <UserList users={appConfig} />
       </Suspense>
     )
   }

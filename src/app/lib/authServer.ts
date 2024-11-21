@@ -61,6 +61,26 @@ export async function getServerSessionToken() {
     const decodedClaims = await adminAuth.verifySessionCookie(sessionCookie)
     return {
       token: sessionCookie,
+    }
+  } catch (error) {
+    console.error('Error verifying session:', error)
+    throw new Error('Invalid Session')
+  }
+}
+
+
+export async function getIdToken() {
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get('session')?.value;
+
+  if (!sessionCookie) {
+    throw new Error('No session cookie found')
+  }
+    
+  try {
+    const decodedClaims = await adminAuth.verifyIdToken(sessionCookie)
+    return {
+      token: sessionCookie,
       userId: decodedClaims.uid
     }
   } catch (error) {

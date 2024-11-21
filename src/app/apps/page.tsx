@@ -14,7 +14,7 @@ export default async function OverviewPage() {
   }
 
     return (
-      <Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
         <AppsData />
       </Suspense>
     )

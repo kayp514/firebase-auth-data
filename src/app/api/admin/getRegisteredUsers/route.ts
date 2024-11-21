@@ -23,42 +23,41 @@ export async function GET(request: NextRequest) {
       console.error('Error verifying token:', error);
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
-
+    
     const { searchParams } = new URL(request.url);
     const appId = searchParams.get('appId');
-    const userId = decodedToken.uid;
 
+    if (!appId) {
+      return NextResponse.json({ error: 'appId is required' }, { status: 400 });
+    }
 
+    // List all users (with pagination for large datasets)
+    const listUsersResult = await adminAuth.listUsers(1000);
+    
+    // Filter users by custom claim
+    const registeredUsers = listUsersResult.users
+      .filter(user => {
+        const customClaims = user.customClaims || {};
+        //console.log('User:', user.email, 'Claims:', customClaims);
+        return customClaims.appId === appId
+      })
+      .map(user => ({
+        uid: user.uid,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        disabled: user.disabled,
+        metadata: user.metadata,
+        customClaims: {
+          appId: user.customClaims?.appId,
+          admin: user.customClaims?.admin
+        }
+      }));
 
-    if (appId) {
-      // Fetch a specific app by ID
-      const appDoc = await adminDb.collection('registeredApps').doc(appId).get();
-      
-      if (!appDoc.exists) {
-        return NextResponse.json({ error: 'App not found' }, { status: 404 });
-      }
+      console.log('Sending users:', registeredUsers);
 
-      const app = {
-        id: appDoc.id,
-        ...appDoc.data()
-      };
-
-      return NextResponse.json({ app }, { status: 200 });
-    } else {
-
-    // Fetch registered apps from Firestore
-    const appsSnapshot = await adminDb.collection('registeredApps')
-    .where('userId', '==', userId)
-    .get();
-    const apps = appsSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-
-    return NextResponse.json({ apps }, { status: 200 });
-  }
+    return NextResponse.json({ registeredUsers }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching registered apps:', error);
+    console.error('Error fetching users:', error);
     return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
   }
 }
