@@ -21,16 +21,32 @@ export async function middleware(request: NextRequest) {
   const isSignup = pathname === '/signup'
   const isPublicRoute = isLoginPage || isSignup
 
-  // First, strictly check for API subdomain
+  // Check if the request is from a browser
+  const userAgent = request.headers.get('user-agent') || ''
+  const isBrowser = userAgent.includes('Mozilla') || 
+                    userAgent.includes('Chrome') || 
+                    userAgent.includes('Safari') ||
+                    userAgent.includes('AppleWebKit')
+
+  // First, check for API subdomain
   if (hostname.startsWith('api.')) {
-    console.log('Blocking API subdomain access:', hostname)
-    return new NextResponse(null, { 
-      status: 404,
-      statusText: 'Not Found',
-      headers: {
-        'Content-Type': 'text/plain'
-      }
-    })
+    console.log('API subdomain access:', hostname)
+    
+    // Block browser access to API subdomain
+    if (isBrowser) {
+      console.log('Blocking browser access to API subdomain')
+      return new NextResponse(null, { 
+        status: 404,
+        statusText: 'Not Found',
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
+    }
+    
+    // Allow server-side access to API subdomain
+    console.log('Allowing server-side access to API subdomain')
+    return NextResponse.next()
   }
 
   // Then handle main domain auth check - make sure we're exactly matching the main domain
