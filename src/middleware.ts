@@ -29,12 +29,14 @@ export async function middleware(request: NextRequest) {
                     userAgent.includes('Safari') ||
                     userAgent.includes('AppleWebKit')
 
+  const isServerSide = userAgent.includes('TernSecure-Server')
+
   // First, check for API subdomain
   if (hostname.startsWith('api.')) {
     console.log('API subdomain access:', hostname)
     
     // Block browser access to API subdomain
-    if (isBrowser) {
+    if (isBrowser && !isServerSide) {
       console.log('Blocking browser access to API subdomain')
       return new NextResponse(null, { 
         status: 404,
@@ -45,7 +47,12 @@ export async function middleware(request: NextRequest) {
       })
     }
     
-    return NextResponse.next()
+    if (isServerSide || !isBrowser) {
+      console.log('Allowing server-side access to API subdomain')
+      // Rewrite the request to the local API route
+      const newUrl = new URL(`/api${pathname}`, request.url)
+      return NextResponse.rewrite(newUrl)
+    }
   }
 
   if (isPublicRoute) {
