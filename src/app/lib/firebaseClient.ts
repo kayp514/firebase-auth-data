@@ -6,7 +6,7 @@ import { getFirestore } from 'firebase/firestore'
 
 //const clientConfig = {}
 
-const response = await fetch('https://api.ternsecure.com/api/fireconfig')
+const response = await fetch('https://api.ternsecure.com/fireconfig')
 const clientConfig = await response.json()
 
 
