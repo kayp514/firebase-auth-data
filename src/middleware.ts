@@ -48,7 +48,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Then handle main domain auth check - make sure we're exactly matching the main domain
   if (isPublicRoute) {
     return NextResponse.next();
   }
