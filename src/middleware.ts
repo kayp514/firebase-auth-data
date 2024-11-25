@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'ternsecure.com'
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development'
 const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL
 
 export const config = {
@@ -44,16 +45,12 @@ export async function middleware(request: NextRequest) {
       })
     }
     
-    // Allow server-side access to API subdomain
-    console.log('Allowing server-side access to API subdomain')
     return NextResponse.next()
   }
 
   // Then handle main domain auth check - make sure we're exactly matching the main domain
-  if (hostname === MAIN_DOMAIN && !isPublicRoute) {
-    console.log('Main domain auth check:', hostname)
-    const loginUrl = new URL('/login', request.url)
-    return NextResponse.redirect(loginUrl)
+  if (isPublicRoute) {
+    return NextResponse.next();
   }
 
   // Allow all other requests (other subdomains)
