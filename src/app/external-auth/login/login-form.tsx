@@ -2,14 +2,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter, useSearchParams  } from 'next/navigation'
-import { signIn } from '@/app/lib/auth'
+import { useRouter} from 'next/navigation'
 import { useTheme } from 'next-themes'
 import { useToast } from '@/hooks/use-toast'
-import { FirebaseError } from 'firebase/app'
 import { Toaster } from '@/components/ui/toaster'
 import { Icons } from '../../ui/icons'
-import { app } from 'firebase-admin'
 
 interface ExternalLoginFormProps {
   callbackUrl: string;
@@ -35,7 +32,7 @@ export default function ExternalLoginForm({ callbackUrl, redirectUrl, appId, cli
     setError('')
 
     try {
-      const response = await fetch('https://ternsecure.com/api/auth/login', {
+      const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({ email, password, callbackUrl, redirectUrl, appId, clientSecret }),
