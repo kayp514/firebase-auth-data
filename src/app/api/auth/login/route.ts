@@ -49,6 +49,6 @@ const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await
   } catch (error: any) {
     console.error('Login error:', error);
     //alert('Login failed. Please try again.');
-    return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
+    return NextResponse.json({ error }, { status: 401 });
   }
 }
