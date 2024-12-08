@@ -35,7 +35,7 @@ export default function ExternalLoginForm({ callbackUrl, redirectUrl, appId, cli
     setError('')
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('https://api.ternsecure.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'User-Agent': 'TernSecure-Server/1.0' },
         body: JSON.stringify({ email, password, callbackUrl, redirectUrl, appId, clientSecret }),
