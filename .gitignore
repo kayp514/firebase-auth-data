@@ -30,6 +30,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+.turbo
 
 # typescript
 *.tsbuildinfo
@@ -37,3 +38,6 @@ next-env.d.ts
 
 # ternsecure_config
 src/config.ts
+
+# Turborepo
+.turbo

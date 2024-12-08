@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { User, onAuthStateChanged } from "firebase/auth"
+import { onAuthStateChanged } from "firebase/auth"
 import { clientAuth } from '@/app/lib/firebaseClient'
 import { useInternalContext } from '../TernSecureProvider'
 

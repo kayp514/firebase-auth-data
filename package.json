@@ -1,6 +1,7 @@
 {
   "name": "dev-firebase-auth-data",
   "version": "0.1.0",
+  "packageManager": "npm@10.9.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
