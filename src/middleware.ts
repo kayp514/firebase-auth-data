@@ -51,7 +51,13 @@ export async function middleware(request: NextRequest) {
       console.log('Allowing server-side access to API subdomain')
       // Rewrite the request to the local API route
       const newUrl = new URL(`/api${pathname}`, request.url)
-      return NextResponse.rewrite(newUrl)
+      const response = NextResponse.rewrite(newUrl)
+
+      response.headers.set('Access-Control-Allow-Origin', IS_DEVELOPMENT ? '*' : 'https://ternsecure.com')
+      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, User-Agent')
+
+      return response
     }
   }
 
