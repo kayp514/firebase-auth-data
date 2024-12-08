@@ -15,8 +15,11 @@ const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await
   }
 
   try {
+    console.log('Starting authentication process...');
+
     const appDoc = await adminDb.collection('registeredApps').doc(appId).get();
     console.log('App Doc exists:', appDoc.exists)
+
     if (!appDoc.exists) {
       console.log('appDoc exists:', appDoc.exists)
       return NextResponse.json({ error: 'Invalid app credentials' }, { status: 401 });
@@ -31,14 +34,19 @@ const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await
       return NextResponse.json({ error: 'Invalid app credentials' }, { status: 401 });
     }
 
+    console.log('Attempting Firebase authentication...');
     const userCredential = await signInWithEmailAndPassword(clientAuth, email, password);
+    console.log('Firebase authentication successful');
+
     const user = userCredential.user;
     const token = await user.getIdToken();
+    console.log('Token generated successfully');
 
     const finalRedirectUrl = `${callbackUrl}?token=${token}&redirect=${redirectUrl || ''}&appId=${appId}`;
+    console.log('Redirect URL created:', finalRedirectUrl);
 
-    return NextResponse.json({ redirectUrl: finalRedirectUrl });
-  } catch (error) {
+    return NextResponse.json({ redirectUrl: finalRedirectUrl }, { status: 200 });
+  } catch (error: any) {
     console.error('Login error:', error);
     //alert('Login failed. Please try again.');
     return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
