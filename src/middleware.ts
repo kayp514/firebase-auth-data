@@ -32,13 +32,8 @@ export async function middleware(request: NextRequest) {
   const isServerSide = userAgent.includes('TernSecure-Server')
 
   // First, check for API subdomain
-  if (hostname.startsWith('api.')) {
+  /*if (hostname.startsWith('api.')) {
     console.log('API subdomain access:', hostname)
-
-    if (pathname === '/auth/login') {
-      return NextResponse.next()
-    }
-    
     // Block browser access to API subdomain
     if (isBrowser && !isServerSide) {
       console.log('Blocking browser access to API subdomain')
@@ -63,7 +58,7 @@ export async function middleware(request: NextRequest) {
 
       return response
     }
-  }
+  }*/
 
   if (isPublicRoute) {
     return NextResponse.next();
