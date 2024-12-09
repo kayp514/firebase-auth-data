@@ -5,8 +5,15 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { clientAuth } from '@/app/lib/firebaseClient';
 import { adminDb } from '@/app/lib/firebaseAdmin';
 import { createHash, timingSafeEqual } from 'crypto';
+import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
 
 export async function POST(request: NextRequest) {
+  const response = NextResponse.next();
+  setCorsHeaders(response);
+
+  if (!rateLimit(request, 5, 60000)) { // 5 requests per minute
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
 
 const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await request.json();
 
