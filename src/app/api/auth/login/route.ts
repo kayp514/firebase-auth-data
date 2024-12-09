@@ -5,6 +5,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { clientAuth } from '@/app/lib/firebaseClient';
 import { adminDb } from '@/app/lib/firebaseAdmin';
 import { createHash, timingSafeEqual } from 'crypto';
+import { handleAuthError } from '@/auth/errorHandling';
 
 export async function POST(request: NextRequest) {
 
@@ -46,9 +47,10 @@ const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await
     console.log('Redirect URL created:', finalRedirectUrl);
 
     return NextResponse.json({ redirectUrl: finalRedirectUrl }, { status: 200 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Login error:', error);
     //alert('Login failed. Please try again.');
-    return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
+    handleAuthError(error);
+    //return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
   }
 }
