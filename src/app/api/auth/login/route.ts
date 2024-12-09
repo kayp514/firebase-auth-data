@@ -8,8 +8,7 @@ import { createHash, timingSafeEqual } from 'crypto';
 import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
 
 export async function POST(request: NextRequest) {
-  const response = NextResponse.next();
-  setCorsHeaders(response);
+  
 
   if (!rateLimit(request, 5, 60000)) { // 5 requests per minute
     return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
@@ -18,7 +17,9 @@ export async function POST(request: NextRequest) {
 const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await request.json();
 
   if (!email || !password || !callbackUrl || !appId || !clientSecret)  {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    const response = NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    setCorsHeaders(response);
+    return response;
   }
 
   try {
@@ -52,10 +53,14 @@ const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await
     const finalRedirectUrl = `${callbackUrl}?token=${token}&redirect=${redirectUrl || ''}&appId=${appId}`;
     console.log('Redirect URL created:', finalRedirectUrl);
 
-    return NextResponse.json({ redirectUrl: finalRedirectUrl }, { status: 200 });
+    const response = NextResponse.json({ redirectUrl: finalRedirectUrl }, { status: 200 });
+    setCorsHeaders(response);
+    return response;
   } catch (error) {
     console.error('Login error:', error);
     //alert('Login failed. Please try again.');
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Authentication failed' }, { status: 401 });
+    const response = NextResponse.json({ error: error instanceof Error ? error.message : 'Authentication failed' }, { status: 401 });
+    setCorsHeaders(response);
+    return response;
   }
 }
