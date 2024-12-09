@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = isLoginPage || isSignup
 
   // Check if the request is from a browser
-  /*const userAgent = request.headers.get('user-agent') || ''
+  const userAgent = request.headers.get('user-agent') || ''
   const isBrowser = userAgent.includes('Mozilla') || 
                     userAgent.includes('Chrome') || 
                     userAgent.includes('Safari') ||
@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   const isServerSide = userAgent.includes('TernSecure-Server')
 
   // First, check for API subdomain
-  /*if (hostname.startsWith('api.')) {
+  if (hostname.startsWith('api.')) {
     console.log('API subdomain access:', hostname)
     // Block browser access to API subdomain
     if (isBrowser && !isServerSide) {
@@ -50,15 +50,9 @@ export async function middleware(request: NextRequest) {
       console.log('Allowing server-side access to API subdomain')
       // Rewrite the request to the local API route
       const newUrl = new URL(`/api${pathname}`, request.url)
-      const response = NextResponse.rewrite(newUrl)
-
-      response.headers.set('Access-Control-Allow-Origin', IS_DEVELOPMENT ? '*' : 'https://ternsecure.com')
-      response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-      response.headers.set('Access-Control-Allow-Headers', 'Content-Type, User-Agent')
-
-      return response
+      return NextResponse.rewrite(newUrl)
     }
-  }*/
+  }
 
   if (isPublicRoute) {
     return NextResponse.next();
