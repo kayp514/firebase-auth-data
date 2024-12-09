@@ -8,6 +8,8 @@ import { useToast } from '@/hooks/use-toast'
 import { Toaster } from '@/components/ui/toaster'
 import { Icons } from '../../ui/icons'
 
+const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://ternsecure.com';
+
 interface ExternalLoginFormProps {
   callbackUrl: string;
   redirectUrl: string;
@@ -32,7 +34,7 @@ export default function ExternalLoginForm({ callbackUrl, redirectUrl, appId, cli
     setError('')
 
     try {
-      const response = await fetch('https://api.ternsecure.com/auth/login', {
+      const response = await fetch(`https://${AUTH_APP_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({ email, password, callbackUrl, redirectUrl, appId, clientSecret }),

@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   const isPublicRoute = isLoginPage || isSignup
 
   // Check if the request is from a browser
-  const userAgent = request.headers.get('user-agent') || ''
+  /*const userAgent = request.headers.get('user-agent') || ''
   const isBrowser = userAgent.includes('Mozilla') || 
                     userAgent.includes('Chrome') || 
                     userAgent.includes('Safari') ||
@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
       const newUrl = new URL(`/api${pathname}`, request.url)
       return NextResponse.rewrite(newUrl)
     }
-  }
+  }*/
 
   if (isPublicRoute) {
     return NextResponse.next();
