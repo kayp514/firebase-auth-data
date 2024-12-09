@@ -5,7 +5,6 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { clientAuth } from '@/app/lib/firebaseClient';
 import { adminDb } from '@/app/lib/firebaseAdmin';
 import { createHash, timingSafeEqual } from 'crypto';
-import { handleAuthError } from '@/auth/errorHandling';
 
 export async function POST(request: NextRequest) {
 
@@ -50,7 +49,6 @@ const { email, password, callbackUrl, redirectUrl, appId, clientSecret } = await
   } catch (error) {
     console.error('Login error:', error);
     //alert('Login failed. Please try again.');
-    handleAuthError(error);
-    //return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
+    return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
   }
 }

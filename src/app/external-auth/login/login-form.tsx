@@ -53,7 +53,7 @@ export default function ExternalLoginForm({ callbackUrl, redirectUrl, appId, cli
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again.')
-      console.log(error)
+      console.log('Error from Login', error)
       toast({
         title: 'Error',
         description: 'An unexpected error occurred. Please try again.',
