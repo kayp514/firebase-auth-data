@@ -18,11 +18,13 @@ export default function Home() {
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="#installation">
             Installation
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="https://github.com/TernSecure/nextjs">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="https://github.com/yourusername/ternsecure">
             GitHub
           </Link>
         </nav>
-        <div className="w-[100px]"></div>
+        <Button asChild variant="outline" className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
+          <Link href="/login">Login</Link>
+        </Button>
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">
@@ -53,7 +55,7 @@ export default function Home() {
                   <Link href="#installation">Get Started</Link>
                 </Button>
                 <Button variant="outline" asChild className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
-                  <Link href="https://github.com/TernSecure/nextjs">
+                  <Link href="https://github.com/yourusername/ternsecure">
                     <Github className="mr-2 h-4 w-4" />
                     GitHub
                   </Link>
@@ -107,7 +109,7 @@ export default function Home() {
               </div>
               <div className="space-x-4">
                 <Button asChild className="bg-slate-400 hover:bg-slate-500 text-white">
-                  <Link href="https://github.com/TernSecure/nextjs">
+                  <Link href="https://github.com/yourusername/ternsecure">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
