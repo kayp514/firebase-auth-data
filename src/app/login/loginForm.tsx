@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react'
-import { redirect, useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import {login } from '@/app/actions/auth'
 import { useTheme } from 'next-themes'
 import SignupDialog from '../signup/signupDialog'
@@ -14,7 +14,6 @@ export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
   const { theme } = useTheme()
   const { toast } = useToast()
 
@@ -29,7 +28,7 @@ export default function LoginForm() {
           title: 'Success',
           description: result.message,
         })
-        redirect('/'); 
+        redirect('/apps'); 
       } else {
         toast({
           title: 'Error',
