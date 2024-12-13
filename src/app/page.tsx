@@ -21,7 +21,7 @@ export default function Home() {
           <Link className="text-sm font-medium hover:underline underline-offset-4" href="#installation">
             Installation
           </Link>
-          <Link className="text-sm font-medium hover:underline underline-offset-4" href="https://github.com/yourusername/ternsecure">
+          <Link className="text-sm font-medium hover:underline underline-offset-4" href="https://github.com/TernSecure/nextjs">
             GitHub
           </Link>
         </nav>
@@ -64,7 +64,7 @@ export default function Home() {
                   <Link href="#installation">Get Started</Link>
                 </Button>
                 <Button variant="outline" asChild className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
-                  <Link href="https://github.com/yourusername/ternsecure">
+                  <Link href="https://github.com/TernSecure/nextjs">
                     <Github className="mr-2 h-4 w-4" />
                     GitHub
                   </Link>
@@ -118,7 +118,7 @@ export default function Home() {
               </div>
               <div className="space-x-4">
                 <Button asChild className="bg-slate-400 hover:bg-slate-500 text-white">
-                  <Link href="https://github.com/yourusername/ternsecure">
+                  <Link href="https://github.com/TernSecure/nextjs">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
