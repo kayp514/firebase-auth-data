@@ -1,7 +1,6 @@
 //app/layout.tsx
 
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -20,8 +19,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "TernSecure Authentication System",
-  description: "Developer by KayP",
+  title: "TernSecure Authentication System for netxjs",
+  description: 'TernSecure simplifies Firebase Authentication integration in your Next.js projects. Built for Next.js 13, 14, and 15.0.3.',
 };
 
 export default function RootLayout({
