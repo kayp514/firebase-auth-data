@@ -7,7 +7,6 @@ import Link from 'next/link'
 import {  Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
-import { useTheme } from 'next-themes'
 import AppRegisterDialog from '@/app/ui/registerAppDialog'
 
 
@@ -31,7 +30,6 @@ interface OverviewProps {
 
 export default function OverviewUI({ initialApps }: OverviewProps) {
   const [apps, setApps] = useState<App[]>(initialApps)
-  const { theme } = useTheme()
   const [showRegisterDialog, setShowRegisterDialog] = useState(false)
 
 
@@ -67,9 +65,6 @@ export default function OverviewUI({ initialApps }: OverviewProps) {
           <Card>
             <CardContent className="flex flex-col items-center justify-center h-64">
               <p className="text-lg text-muted-foreground mb-4">You haven't registered any apps yet.</p>
-              <Button asChild>
-                <Link href="/apps/register">Register Your First App</Link>
-              </Button>
             </CardContent>
           </Card>
         ) : (
