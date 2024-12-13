@@ -1,9 +1,12 @@
+'use client'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { ArrowRight, CheckCircle, Github } from 'lucide-react'
 import { InstallationGuide } from '@/components/ui/installationguide'
+import { useSession } from '../app/providers/TernSecureProvider'
 
 export default function Home() {
+  const { status } = useSession()
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
@@ -22,9 +25,15 @@ export default function Home() {
             GitHub
           </Link>
         </nav>
-        <Button asChild variant="outline" className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
-          <Link href="/login">Login</Link>
-        </Button>
+        {status === 'active' ? (
+  <Button asChild variant="outline" className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
+    <Link href="/apps">Dashboard</Link>
+  </Button>
+) : (
+  <Button asChild variant="outline" className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
+    <Link href="/login">Login</Link>
+  </Button>
+)}
       </header>
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">

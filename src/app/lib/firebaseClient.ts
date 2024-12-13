@@ -17,5 +17,5 @@ const clientConfig = {
 
 const clientApp = initializeApp(clientConfig)
 export const clientAuth = getAuth(clientApp)
-setPersistence(clientAuth, browserSessionPersistence)
+setPersistence(clientAuth, browserLocalPersistence)
 export const db = getFirestore(clientApp)

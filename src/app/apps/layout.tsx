@@ -23,7 +23,6 @@ import { useCurrentUser } from '../providers/TernSecureProvider'
 
 export default function AppsLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
-  const { theme } = useTheme()
   const { authState } = useAuth()
   const { isSignedIn, loading, userId} = authState
   const { currentUser, loading: userLoading } = useCurrentUser()
