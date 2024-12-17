@@ -1,12 +1,12 @@
 //app/login/page.tsx
-import LoginForm from './loginForm'
+import { SignIn } from './sign-in'
 
 export default function LoginPage() {
 
     return (
       <div className="flex flex-col items-center justify-center min-h-screen py-2">
         <div className="w-full">
-            <LoginForm />
+            <SignIn/>
         </div>
       </div>
     )
