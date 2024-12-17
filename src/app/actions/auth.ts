@@ -1,7 +1,7 @@
 // app/actions/auth.ts
 'use client'
 
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
+import { signInWithEmailAndPassword, GoogleAuthProvider, OAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { clientAuth } from '@/app/lib/firebaseClient'
 import { handleAuthError } from '@/auth/errorHandling';
 import { createSessionCookie } from '../lib/authServer';
@@ -44,10 +44,9 @@ export async function signInWithRedirectGoogle() {
 
 
 export async function signInWithMicrosoft() {
-  const provider = new GoogleAuthProvider()
+  const provider = new OAuthProvider('microsoft.com')
   provider.setCustomParameters({
-    'login_hint': 'user@example.com',
-    'prompt': 'select_account'
+    prompt: 'consent'
   })
 
   try {
