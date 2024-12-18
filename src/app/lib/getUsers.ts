@@ -12,7 +12,7 @@ export const getUsers = cache(async (appId?: string) => {
   
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get('session')?.value;
+    const token = cookieStore.get('_session_cookie')?.value;
 
     if (!token) {
       return { error: 'Not authenticated' }
