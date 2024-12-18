@@ -22,7 +22,7 @@ export async function createSessionCookie(idToken: string) {
       const sessionCookie = await adminAuth.createSessionCookie(idToken, { expiresIn });
 
       const cookieStore = await cookies();
-      cookieStore.set('session', sessionCookie, {
+      cookieStore.set('_session_cookie', sessionCookie, {
           maxAge: expiresIn,
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',

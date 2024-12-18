@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import { Loader2 } from 'lucide-react'
 import { clientAuth } from '../../lib/firebaseClient'
 import { getRedirectResult } from 'firebase/auth'
+import { createSessionCookie } from '@/app/lib/authServer'
 
 export interface SignInProps {
   onError?: (error: Error) => void
@@ -49,6 +50,11 @@ export function SignIn({
         try {
           const result = await getRedirectResult(clientAuth)
           if (result) {
+            const idToken = await result.user.getIdToken()
+            const session = await createSessionCookie(idToken)
+            if (!session.success) {
+              throw new Error('Failed to create session')
+            }
             router.push('/')
           }
         } catch (error: unknown) {
