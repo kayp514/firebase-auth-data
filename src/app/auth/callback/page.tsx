@@ -13,7 +13,7 @@ export default function AuthCallback() {
       try {
         const result = await handleAuthRedirectResult()
         if (result.success) {
-          router.push('/')
+          router.push('/mo')
         } else {
           console.error('Auth error:', result.error)
           const errorMessage = encodeURIComponent(result.error)

@@ -32,7 +32,8 @@ export async function signInWithRedirectGoogle() {
     login_hint: 'user@example.com',
     prompt: 'select_account',
     redirectUrl: 'https://ternsecure.com/auth/callback',
-    continue_uri: 'https://ternsecure.com/auth/callback'
+    continue_uri: 'https://ternsecure.com/auth/callback',
+    'redirect_uri': 'https://ternsecure.com/auth/callback'
   })  
 
   try {
