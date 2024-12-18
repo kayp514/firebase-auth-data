@@ -27,6 +27,8 @@ export async function signInWithEmail(email: string, password: string){
 
 export async function signInWithRedirectGoogle() {
   const provider = new GoogleAuthProvider()
+  provider.addScope('https://www.googleapis.com/auth/userinfo.email')
+  provider.addScope('https://www.googleapis.com/auth/userinfo.profile')
   provider.setCustomParameters({
     login_hint: 'user@example.com',
     prompt: 'select_account',

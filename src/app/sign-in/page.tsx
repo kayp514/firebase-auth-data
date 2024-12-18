@@ -1,6 +1,6 @@
 'use client'
 
-import { SignIn } from '@/app/ui/sign-in'
+import { SignIn } from '../providers/components/sign-in'
 import { Suspense } from 'react'
 
 export default function SignInPage() {
