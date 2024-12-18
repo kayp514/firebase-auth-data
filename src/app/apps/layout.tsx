@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useTheme } from 'next-themes'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 import { useAuth } from '../providers/TernSecureProvider'
@@ -32,7 +31,7 @@ export default function AppsLayout({ children }: { children: React.ReactNode }) 
   const handleSignOut = async () => {
     try {
       await clientAuth.signOut()
-      router.push('/login')
+      router.push('/sign-in')
     } catch (error) {
       console.error('Error signing out:', error)
     }
@@ -43,7 +42,7 @@ export default function AppsLayout({ children }: { children: React.ReactNode }) 
   }
 
   if(!isSignedIn) {
-    redirect('/login')
+    redirect('/sign-in')
   }
 
 

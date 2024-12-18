@@ -29,7 +29,7 @@ export default function MoPage() {
   }
 
   if(!isSignedIn){
-    redirect('/login')
+    redirect('/sign-in')
   }
 
   return (
