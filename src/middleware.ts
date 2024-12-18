@@ -15,7 +15,7 @@ export const config = {
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl
   const { hostname, pathname } = url
-  console.log('Middleware:', hostname, pathname)
+  //console.log('Middleware:', hostname, pathname)
   
   // Define public routes
   const isLoginPage = pathname === '/sign-in'
