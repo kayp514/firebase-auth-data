@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { clientAuth } from '@/app/lib/firebaseClient'
 import { useToast } from '@/hooks/use-toast'
 
+const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL || 'https://ternsecure.com';
+
 interface App {
     id: string
     defaultDomain: string
@@ -35,16 +37,16 @@ interface RegisterDialogProps {
 
     try {
         const user = clientAuth.currentUser;
-        console.log("registerApp - User:", user);
+        //console.log("registerApp - User:", user);
         const token = await user?.getIdToken();
-        console.log("registerApp - Token:", token);
+        //console.log("registerApp - Token:", token);
       if (!token) {
         throw new Error('Not authenticated')
       }
 
       console.log("registerApp - appName:", appName);
 
-      const response = await fetch('/api/admin/registerApp', {
+      const response = await fetch(`${AUTH_APP_URL}/api/admin/registerApp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +66,7 @@ interface RegisterDialogProps {
       if (data.appId) {
         toast({
           title: "App Registered!",
-          description: "You can add components to your app using the cli.",
+          description: "Success.",
         })
         onAppRegistered(data.app)
         setAppName('')

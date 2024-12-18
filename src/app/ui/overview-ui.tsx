@@ -19,10 +19,6 @@ interface App {
   createdAt: string
 }
 
-interface User {
-    uid: string
-    email: string
-}
 
 interface OverviewProps {
     initialApps: App[]
