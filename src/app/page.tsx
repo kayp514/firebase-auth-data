@@ -31,7 +31,7 @@ export default function Home() {
   </Button>
 ) : (
   <Button asChild variant="outline" className="bg-white hover:bg-slate-100 text-slate-500 border-slate-400">
-    <Link href="/login">Login</Link>
+    <Link href="/sign-in">Login</Link>
   </Button>
 )}
       </header>

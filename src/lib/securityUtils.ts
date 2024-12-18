@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 
 // In-memory store for rate limiting
 // Note: In production, use Redis or a similar solution

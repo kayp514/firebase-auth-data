@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/app/lib/firebaseAdmin';
 import { randomBytes, createHash } from 'crypto';
-import { sanitize } from 'isomorphic-dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { rateLimit, setCorsHeaders } from '@/lib/securityUtils';
 
 const MAIN_DOMAIN = 'ternsecure.com';
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid or missing appName' }, { status: 400 });
     }
 
-    const sanitizedAppName = sanitize(body.appName);
+    const sanitizedAppName = DOMPurify.sanitize(body.appName);
     const appId = randomBytes(16).toString('hex');
     const clientSecret = randomBytes(32).toString('hex');
     const subdomain = generateSubdomain(sanitizedAppName);

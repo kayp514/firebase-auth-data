@@ -3,7 +3,6 @@
 
 import { signInWithEmailAndPassword, GoogleAuthProvider, OAuthProvider, signInWithRedirect, getRedirectResult } from 'firebase/auth';
 import { clientAuth } from '@/app/lib/firebaseClient'
-import { handleAuthError } from '@/auth/errorHandling';
 import { createSessionCookie } from '../lib/authServer';
 
 
@@ -31,9 +30,6 @@ export async function signInWithRedirectGoogle() {
   provider.setCustomParameters({
     login_hint: 'user@example.com',
     prompt: 'select_account',
-    redirectUrl: 'https://ternsecure.com/auth/callback',
-    continue_uri: 'https://ternsecure.com/auth/callback',
-    'redirect_uri': 'https://ternsecure.com/auth/callback'
   })  
 
   try {

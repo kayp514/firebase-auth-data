@@ -58,7 +58,7 @@ export default function RegisterAppPage() {
 
   useEffect(() => {
     fetchRegisteredApps();
-  }, []);
+  }, [fetchRegisteredApps]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

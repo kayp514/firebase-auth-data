@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'ternsecure.com'
-const IS_DEVELOPMENT = process.env.NODE_ENV === 'development'
-const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL
+//const MAIN_DOMAIN = process.env.NEXT_PUBLIC_MAIN_DOMAIN || 'ternsecure.com'
+//const IS_DEVELOPMENT = process.env.NODE_ENV === 'development'
+//const AUTH_APP_URL = process.env.NEXT_PUBLIC_AUTH_APP_URL
 
 export const config = {
   matcher: [
@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
   console.log('Middleware:', hostname, pathname)
   
   // Define public routes
-  const isLoginPage = pathname === '/login'
+  const isLoginPage = pathname === '/sign-in'
   const isSignup = pathname === '/signup'
   const isPublicRoute = isLoginPage || isSignup
 

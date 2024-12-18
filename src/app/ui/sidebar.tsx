@@ -44,9 +44,7 @@ export function AppDashboardSidebar() {
   const params = useParams()
   const [currentAppId, setCurrentAppId] = useState(params.appId as string)
   const [apps, setApps] = useState<App[]>([])
-  const { theme, setTheme } = useTheme()
   const pathname = usePathname()
-  const userId = useCurrentUser().currentUser?.uid
   
 
   useEffect(() => {

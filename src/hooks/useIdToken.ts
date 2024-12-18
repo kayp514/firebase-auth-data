@@ -7,7 +7,6 @@ import { User } from 'firebase/auth'
 
 interface IdTokenResult {
   token: string | null
-  claims: { [key: string]: any } | null
   issuedAtTime: string | null
   expirationTime: string | null
   authTime: string | null
@@ -32,7 +31,6 @@ export function useIdToken() {
     const result = await user.getIdTokenResult(true)
     return {
       token: result.token,
-      claims: result.claims,
       issuedAtTime: result.issuedAtTime,
       expirationTime: result.expirationTime,
       authTime: result.authTime,

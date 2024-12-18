@@ -28,7 +28,6 @@ interface ApiResponse {
 function UserList({ users }: { users: User[] }) {
   const { theme } = useTheme()
   const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
 
 
   if (!users) {
