@@ -17,13 +17,13 @@ export default function AuthCallback() {
         } else {
           console.error('Auth error:', result.error)
           const errorMessage = encodeURIComponent(result.error)
-          router.push(`/sign-in?error=${errorMessage}`)
+          router.push(`/login?error=${errorMessage}`)
         }
       } catch (err) {
         console.error('Callback error:', err)
         setError('Authentication failed. Please try again.')
         setTimeout(() => {
-          router.push('/sign-in?error=Authentication failed')
+          router.push('/login?error=Authentication failed')
         }, 2000)
       }
     }

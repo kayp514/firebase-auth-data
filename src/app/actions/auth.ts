@@ -31,9 +31,7 @@ export async function signInWithRedirectGoogle() {
   provider.setCustomParameters({
     login_hint: 'user@example.com',
     prompt: 'select_account',
-    redirect_uri: 'https://ternsecure.com/auth/callback', 
     redirectUrl: 'https://ternsecure.com/auth/callback',
-    context_uri: 'https://ternsecure.com/auth/callback',
   })  
 
   try {
