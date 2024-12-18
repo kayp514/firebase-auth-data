@@ -14,6 +14,8 @@ import { Loader2 } from 'lucide-react'
 import { clientAuth } from '../../lib/firebaseClient'
 import { getRedirectResult } from 'firebase/auth'
 import { createSessionCookie } from '@/app/lib/authServer'
+import { AuthBackground } from './background'
+
 
 export interface SignInProps {
   onError?: (error: Error) => void
@@ -124,6 +126,8 @@ export function SignIn({
   }
 
   return (
+    <div className="relative flex items-center justify-center">
+      <AuthBackground />
     <Card className={cn("w-full max-w-md mx-auto mt-8", className, customStyles.card)}>
       <CardHeader className="space-y-1 text-center">
         <CardTitle className={cn("font-bold", customStyles.title)}>Sign in to your account</CardTitle>
@@ -221,6 +225,7 @@ export function SignIn({
         </p>
       </CardFooter>
     </Card>
+    </div>
   )
 }
 
