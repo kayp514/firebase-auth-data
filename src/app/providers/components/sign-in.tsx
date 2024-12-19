@@ -130,9 +130,9 @@ export function SignIn({
       <AuthBackground />
     <Card className={cn("w-full max-w-md mx-auto mt-8", className, customStyles.card)}>
       <CardHeader className="space-y-1 text-center">
-        <CardTitle className={cn("font-bold", customStyles.title)}>Sign in to your account</CardTitle>
+        <CardTitle className={cn("font-bold", customStyles.title)}>Sign in to TernSecure</CardTitle>
         <CardDescription className={cn("text-muted-foreground", customStyles.description)}>
-          Enter your email below to create your account
+          Please sign in to continue
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
