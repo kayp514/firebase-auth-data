@@ -4,6 +4,8 @@ import { initializeApp } from 'firebase/app'
 import {  getAuth, setPersistence, browserSessionPersistence, inMemoryPersistence, browserLocalPersistence, connectAuthEmulator } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
+const APP_NAME = process.env.NEXT_PUBLIC_FIREBASE_APP_NAME;
+
 const clientConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -15,7 +17,7 @@ const clientConfig = {
 }
 
 
-const clientApp = initializeApp(clientConfig)
+const clientApp = initializeApp(clientConfig, APP_NAME)
 export const clientAuth = getAuth(clientApp)
 setPersistence(clientAuth, browserLocalPersistence)
 export const db = getFirestore(clientApp)
