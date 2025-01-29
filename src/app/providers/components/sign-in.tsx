@@ -18,7 +18,9 @@ import { AuthBackground } from './background'
 
 
 export interface SignInProps {
+  redirectUrl?: string
   onError?: (error: Error) => void
+  onSuccess?: () => void
   className?: string
   customStyles?: {
     card?: string
@@ -32,8 +34,10 @@ export interface SignInProps {
   }
 }
 
-export function SignIn({ 
-  onError, 
+export function SignIn({
+  redirectUrl,
+  onError,
+  onSuccess,
   className,
   customStyles = {}
 }: SignInProps) {
@@ -179,9 +183,11 @@ export function SignIn({
           </Button>
         </form>
         <div className="relative">
-          <Separator className={cn(customStyles.separator)} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="bg-background px-2 text-muted-foreground text-sm">Or continue with</span>
+           <div className="absolute inset-0 flex items-center">
+          <Separator className={cn("w-full", customStyles.separator)} />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">

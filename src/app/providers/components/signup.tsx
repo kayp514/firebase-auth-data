@@ -12,15 +12,25 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { AuthBackground } from "./background"
 import { Separator } from "@/components/ui/separator"
-import { createUser } from '../../actions/auth'
+import { createUser, signInWithRedirectGoogle, signInWithMicrosoft } from '../../actions/auth'
 import { useSignUp } from '../../signup/ctx/signup-ctx'
+
+export interface SignUpProps {
+    redirectUrl?: string
+    onError?: (error: Error) => void
+    onSuccess?: () => void
+}
+
 
 interface PasswordRequirement {
   text: string
   satisfied: boolean
 }
 
-export function SignUp() {
+export function SignUp({
+    redirectUrl, 
+    onError,
+    onSuccess }: SignUpProps) {
   const { setEmail: setContextEmail } = useSignUp()
   const [formData, setFormData] = useState({
     name: "",
@@ -30,7 +40,7 @@ export function SignUp() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [passwordFocused, setPasswordFocused] = useState(false)
   const router = useRouter()
@@ -71,26 +81,50 @@ export function SignUp() {
   }
 
   const isFormValid = () => {
-    return formData.name.length > 0 && formData.email.length > 0 && passwordRequirements.every((req) => req.satisfied)
+    return formData.email.length > 0 && passwordRequirements.every((req) => req.satisfied)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!isFormValid()) return
 
-    setIsLoading(true)
+    setLoading(true)
     setError("")
     try {
      const result = await createUser(formData.email, formData.password)
      if(result.success) {
         setContextEmail(formData.email)
+
+        onSuccess?.()
+        
         router.push('/signup/verify')
      }
     } catch (error) {
       console.error("Error:", error)
       setError(error instanceof Error ? error.message : "Failed to create account")
     } finally {
-      setIsLoading(false)
+      setLoading(false)
+    }
+  }
+
+
+  const handleSocialSignIn = async (provider: 'google' | 'microsoft') => {
+    setLoading(true)
+    try {
+      const currentUrl = new URL(window.location.href)
+      currentUrl.searchParams.set('signInRedirect', 'true')
+      window.history.replaceState({}, '', currentUrl.toString())
+
+      const result = provider === 'google' ? await signInWithRedirectGoogle() : await signInWithMicrosoft()
+      if (!result.success) {
+        throw new Error(result.error)
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : `Failed to sign in with ${provider}`
+      setError(errorMessage)
+      const newUrl = new URL(window.location.href)
+      newUrl.searchParams.delete('signInRedirect')
+      window.history.replaceState({}, '', newUrl.toString())
     }
   }
 
@@ -109,19 +143,6 @@ export function SignUp() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="John Doe"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                disabled={isLoading}
-              />
-            </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -253,11 +274,7 @@ export function SignUp() {
               <Button 
                 variant="outline" 
                 disabled={isLoading}
-                onClick={() => {
-                  setIsLoading(true)
-                  // Add your Google signup logic here
-                  console.log('Google signup')
-                }}
+                onClick={() => handleSocialSignIn('google')} 
                 className="flex items-center justify-center"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -271,11 +288,7 @@ export function SignUp() {
               <Button 
                 variant="outline" 
                 disabled={isLoading}
-                onClick={() => {
-                  setIsLoading(true)
-                  // Add your Microsoft signup logic here
-                  console.log('Microsoft signup')
-                }}
+                onClick={() => handleSocialSignIn('microsoft')} 
                 className="flex items-center justify-center"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">

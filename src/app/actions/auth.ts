@@ -31,6 +31,8 @@ export async function createUser(email: string, password: string) {
     // Handle specific Firebase auth errors
     if (error instanceof Error) {
       switch (error.message) {
+        case 'auth/too-many-requests':
+          throw new Error('Too many attempts. Please try again later.');
         case 'auth/email-already-in-use':
           throw new Error('Email is already registered.');
         case 'auth/invalid-email':
@@ -134,13 +136,51 @@ export async function checkEmailVerification(user: any) {
 }
 
 
-export async function resendEmailVerification(user: any) {
+export async function resendEmailVerification() {
   try {
-    // Force refresh the token
+    const user = clientAuth.currentUser;
+    if (!user) {
+      throw new Error('No user found. Please try signing up again.');
+    }
+
     await user.reload();
-    return user.emailVerified;
-  } catch (error) {
-    console.error('Error checking email verification:', error);
-    return false;
-  }
+
+    if (user.emailVerified) {
+      return { 
+        success: true, 
+        message: 'Email is already verified. You can sign in.',
+        isVerified: true 
+      };
+    }
+
+    const actionCodeSettings = {
+      url: `${window.location.origin}/sign-in`,
+      handleCodeInApp: true,
+    };
+
+    await sendEmailVerification(user, actionCodeSettings);
+    return { 
+      success: true, 
+      message: 'Verification email sent successfully.',
+      isVerified: false
+     };
+    } catch (error) {
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'auth/too-many-requests':
+            throw new Error('Too many attempts. Please try again later.');
+          case 'auth/email-already-in-use':
+            throw new Error('Email is already registered.');
+          case 'auth/invalid-email':
+            throw new Error('Invalid email address.');
+          case 'auth/operation-not-allowed':
+            throw new Error('Email/password accounts are not enabled.');
+          case 'auth/weak-password':
+            throw new Error('Password is too weak.');
+          default:
+            throw new Error(error.message);
+        }
+      }
+      throw new Error('Failed to resend verification email.');
+    }
 }
